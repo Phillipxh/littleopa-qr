@@ -77,10 +77,27 @@ export function DownloadButtons({
   const [showHints, setShowHints] = useState(false);
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const hintsRef = useRef<HTMLSpanElement | null>(null);
+  const hintsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const hintsPopoverRef = useRef<HTMLSpanElement | null>(null);
+  const [hintsPopoverPosition, setHintsPopoverPosition] = useState({ top: 0, left: 0 });
   const disabled = !validation.isValid;
 
   useEffect(() => {
     if (!showHints) return;
+
+    const updateHintsPosition = () => {
+      if (!hintsButtonRef.current || !hintsPopoverRef.current) return;
+      const buttonRect = hintsButtonRef.current.getBoundingClientRect();
+      const popoverRect = hintsPopoverRef.current.getBoundingClientRect();
+      const gap = 10;
+      const margin = 12;
+
+      const top = Math.max(margin, buttonRect.top - popoverRect.height - gap);
+      const unclampedLeft = buttonRect.right - popoverRect.width;
+      const left = Math.max(margin, Math.min(unclampedLeft, window.innerWidth - popoverRect.width - margin));
+
+      setHintsPopoverPosition({ top, left });
+    };
 
     const onPointerDown = (event: PointerEvent) => {
       if (!hintsRef.current) return;
@@ -93,13 +110,22 @@ export function DownloadButtons({
       if (event.key === "Escape") setShowHints(false);
     };
 
+    const onViewportChange = () => updateHintsPosition();
+
+    const raf = window.requestAnimationFrame(updateHintsPosition);
     window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onViewportChange);
+    document.addEventListener("scroll", onViewportChange, true);
+
     return () => {
+      window.cancelAnimationFrame(raf);
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onViewportChange);
+      document.removeEventListener("scroll", onViewportChange, true);
     };
-  }, [showHints]);
+  }, [showHints, quality.warnings.length, quality.tips.length]);
 
   const runDownload = async (format: QRExportFormat) => {
     if (!qrCodeRef.current) return;
@@ -180,6 +206,7 @@ export function DownloadButtons({
                 <span className="text-[13px] font-bold">{quality.score}/100</span>
                 <span ref={hintsRef} className="relative inline-flex">
                   <button
+                    ref={hintsButtonRef}
                     type="button"
                     aria-label={isDe ? "Hinweise anzeigen" : "Show hints"}
                     aria-expanded={showHints}
@@ -188,7 +215,11 @@ export function DownloadButtons({
                   >
                     ?
                   </button>
-                  <span className={`absolute right-0 top-[calc(100%+0.5rem)] z-[80] w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 shadow-2xl shadow-slate-950/15 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 ${showHints ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}>
+                  <span
+                    ref={hintsPopoverRef}
+                    style={{ top: `${hintsPopoverPosition.top}px`, left: `${hintsPopoverPosition.left}px` }}
+                    className={`fixed z-[90] w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 shadow-2xl shadow-slate-950/15 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 ${showHints ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}
+                  >
                     <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Hinweise" : "Hints"}</span>
                     {tooltipItems.length ? (
                       tooltipItems.slice(0, 5).map((item) => (
