@@ -13,7 +13,7 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
-import { MutableRefObject, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import type { AppLanguage, HistoryItem, QRDesignOptions, QRExportFormat, QRQualityResult, StoredSettings, ValidationResult } from "../types";
 import { copyToClipboard, downloadQRCode, sanitizeFilename } from "../utils/export";
 
@@ -74,8 +74,32 @@ export function DownloadButtons({
   const [toolsStatus, setToolsStatus] = useState("");
   const [copied, setCopied] = useState(false);
   const [settingsCopied, setSettingsCopied] = useState(false);
+  const [showHints, setShowHints] = useState(false);
   const importInputRef = useRef<HTMLInputElement | null>(null);
+  const hintsRef = useRef<HTMLSpanElement | null>(null);
   const disabled = !validation.isValid;
+
+  useEffect(() => {
+    if (!showHints) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!hintsRef.current) return;
+      if (!hintsRef.current.contains(event.target as Node)) {
+        setShowHints(false);
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowHints(false);
+    };
+
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [showHints]);
 
   const runDownload = async (format: QRExportFormat) => {
     if (!qrCodeRef.current) return;
@@ -143,7 +167,7 @@ export function DownloadButtons({
         : "border-rose-200/90 bg-gradient-to-br from-rose-50/95 via-white/90 to-amber-50/80 dark:border-rose-900/60 dark:from-rose-950/30 dark:via-slate-900/88 dark:to-amber-950/22";
 
   return (
-    <section className="bottom-action-bar fixed inset-x-0 bottom-0 z-50 max-h-[62vh] overflow-y-auto border-t border-slate-200 px-3 py-2 dark:border-slate-800 sm:px-4">
+    <section className="bottom-action-bar fixed inset-x-0 bottom-0 z-50 max-h-[62vh] overflow-y-auto overflow-x-visible border-t border-slate-200 px-3 py-2 dark:border-slate-800 sm:px-4">
       <div className="mx-auto flex w-full max-w-[1480px] flex-col gap-2 lg:flex-row lg:items-stretch">
         <div className={`flex min-w-[250px] flex-col justify-center rounded-lg border p-2 shadow-panel lg:w-[290px] ${qualityShellTone}`}>
           <div className={`rounded-md border px-3 py-1.5 ${qualityTone}`}>
@@ -154,15 +178,17 @@ export function DownloadButtons({
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-[13px] font-bold">{quality.score}/100</span>
-                <span className="group relative inline-flex">
+                <span ref={hintsRef} className="relative inline-flex">
                   <button
                     type="button"
                     aria-label={isDe ? "Hinweise anzeigen" : "Show hints"}
+                    aria-expanded={showHints}
+                    onClick={() => setShowHints((current) => !current)}
                     className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-current/25 bg-white/62 text-xs font-bold shadow-sm outline-none transition hover:bg-white focus:ring-2 focus:ring-current/30 dark:bg-slate-950/35"
                   >
                     ?
                   </button>
-                  <span className="pointer-events-none absolute bottom-[calc(100%+0.6rem)] right-0 z-[70] w-[320px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 opacity-0 shadow-2xl shadow-slate-950/15 transition group-hover:opacity-100 group-focus-within:opacity-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
+                  <span className={`absolute right-0 top-[calc(100%+0.5rem)] z-[80] w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 shadow-2xl shadow-slate-950/15 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 ${showHints ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}>
                     <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Hinweise" : "Hints"}</span>
                     {tooltipItems.length ? (
                       tooltipItems.slice(0, 5).map((item) => (
