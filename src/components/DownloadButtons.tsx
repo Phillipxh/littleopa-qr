@@ -14,6 +14,7 @@ import {
   Upload,
 } from "lucide-react";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { AppLanguage, HistoryItem, QRDesignOptions, QRExportFormat, QRQualityResult, StoredSettings, ValidationResult } from "../types";
 import { copyToClipboard, downloadQRCode, sanitizeFilename } from "../utils/export";
 
@@ -76,7 +77,6 @@ export function DownloadButtons({
   const [settingsCopied, setSettingsCopied] = useState(false);
   const [showHints, setShowHints] = useState(false);
   const importInputRef = useRef<HTMLInputElement | null>(null);
-  const hintsRef = useRef<HTMLSpanElement | null>(null);
   const hintsButtonRef = useRef<HTMLButtonElement | null>(null);
   const hintsPopoverRef = useRef<HTMLSpanElement | null>(null);
   const [hintsPopoverPosition, setHintsPopoverPosition] = useState({ top: 0, left: 0 });
@@ -100,8 +100,10 @@ export function DownloadButtons({
     };
 
     const onPointerDown = (event: PointerEvent) => {
-      if (!hintsRef.current) return;
-      if (!hintsRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const clickedButton = hintsButtonRef.current?.contains(target);
+      const clickedPopover = hintsPopoverRef.current?.contains(target);
+      if (!clickedButton && !clickedPopover) {
         setShowHints(false);
       }
     };
@@ -204,7 +206,7 @@ export function DownloadButtons({
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-[13px] font-bold">{quality.score}/100</span>
-                <span ref={hintsRef} className="relative inline-flex">
+                <span className="relative inline-flex">
                   <button
                     ref={hintsButtonRef}
                     type="button"
@@ -215,22 +217,6 @@ export function DownloadButtons({
                   >
                     ?
                   </button>
-                  <span
-                    ref={hintsPopoverRef}
-                    style={{ top: `${hintsPopoverPosition.top}px`, left: `${hintsPopoverPosition.left}px` }}
-                    className={`fixed z-[90] w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 shadow-2xl shadow-slate-950/15 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 ${showHints ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}
-                  >
-                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Hinweise" : "Hints"}</span>
-                    {tooltipItems.length ? (
-                      tooltipItems.slice(0, 5).map((item) => (
-                        <span key={item} className="mt-1 block">
-                          {item}
-                        </span>
-                      ))
-                    ) : (
-                      <span>{isDe ? "Keine Hinweise. Der QR-Code ist bereit." : "No hints. The QR code is ready."}</span>
-                    )}
-                  </span>
                 </span>
               </span>
             </div>
@@ -374,6 +360,27 @@ export function DownloadButtons({
           {toolsStatus ? <p className="mt-2 rounded-md border border-slate-100 bg-white/70 px-3 py-2 text-sm text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-950/45 dark:text-slate-300">{toolsStatus}</p> : null}
         </div>
       </div>
+      {typeof document !== "undefined"
+        ? createPortal(
+            <span
+              ref={hintsPopoverRef}
+              style={{ top: `${hintsPopoverPosition.top}px`, left: `${hintsPopoverPosition.left}px` }}
+              className={`fixed z-[120] w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 shadow-2xl shadow-slate-950/15 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 ${showHints ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}
+            >
+              <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Hinweise" : "Hints"}</span>
+              {tooltipItems.length ? (
+                tooltipItems.slice(0, 5).map((item) => (
+                  <span key={item} className="mt-1 block">
+                    {item}
+                  </span>
+                ))
+              ) : (
+                <span>{isDe ? "Keine Hinweise. Der QR-Code ist bereit." : "No hints. The QR code is ready."}</span>
+              )}
+            </span>,
+            document.body,
+          )
+        : null}
     </section>
   );
 }
