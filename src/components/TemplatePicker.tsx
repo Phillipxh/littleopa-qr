@@ -1,11 +1,13 @@
-import type { QRDesignOptions } from "../types";
-import { templates } from "../data/templates";
+import { getTemplates } from "../data/templates";
+import type { AppLanguage, QRDesignOptions } from "../types";
 
 interface TemplatePickerProps {
+  language: AppLanguage;
   onApply: (design: QRDesignOptions) => void;
 }
 
-export function TemplatePicker({ onApply }: TemplatePickerProps) {
+export function TemplatePicker({ language, onApply }: TemplatePickerProps) {
+  const templates = getTemplates(language);
   return (
     <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
       {templates.map((template) => (

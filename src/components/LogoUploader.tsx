@@ -1,11 +1,12 @@
 import { ImagePlus, Trash2, Upload } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
-import { contentTypes } from "../data/contentTypes";
-import type { QRContentType, QRDesignOptions, QRLogoOptions } from "../types";
+import { getContentTypes } from "../data/contentTypes";
+import type { AppLanguage, QRContentType, QRDesignOptions, QRLogoOptions } from "../types";
 import { createTypeIconDataUrl } from "../utils/typeIcon";
 import { RangeField, SwitchField } from "./forms/FormControls";
 
 interface LogoUploaderProps {
+  language: AppLanguage;
   logo: QRLogoOptions;
   contentType: QRContentType;
   design: QRDesignOptions;
@@ -14,9 +15,11 @@ interface LogoUploaderProps {
 
 const acceptedTypes = ["image/png", "image/jpeg", "image/svg+xml"];
 
-export function LogoUploader({ logo, contentType, design, onChange }: LogoUploaderProps) {
+export function LogoUploader({ language, logo, contentType, design, onChange }: LogoUploaderProps) {
+  const isDe = language === "de";
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [error, setError] = useState("");
+  const contentTypes = getContentTypes(language);
   const selectedType = contentTypes.find((type) => type.id === contentType) ?? contentTypes[0];
   const TypeIcon = selectedType.icon;
   const typeIconPreview = useMemo(
@@ -24,11 +27,11 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
     [contentType, design.eyeColor, design.foregroundColor],
   );
   const displayImage = logo.useTypeIcon ? typeIconPreview : logo.image;
-  const displayName = logo.useTypeIcon ? `${selectedType.label}-Icon aktiv` : logo.name || "Logo geladen";
+  const displayName = logo.useTypeIcon ? `${selectedType.label}${isDe ? "-Icon aktiv" : " icon active"}` : logo.name || (isDe ? "Logo geladen" : "Logo loaded");
 
   const readFile = (file: File) => {
     if (!acceptedTypes.includes(file.type)) {
-      setError("Bitte PNG, JPG oder SVG verwenden.");
+      setError(isDe ? "Bitte PNG, JPG oder SVG verwenden." : "Please use PNG, JPG, or SVG.");
       return;
     }
     const reader = new FileReader();
@@ -61,11 +64,13 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
         </span>
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2 text-sm font-semibold">
-            Typ-Icon automatisch anzeigen
+            {isDe ? "Typ-Icon automatisch anzeigen" : "Automatically show type icon"}
             <TypeIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-teal-700 dark:text-teal-300" />
           </span>
           <span className="mt-1 block text-xs leading-5 text-slate-500 dark:text-slate-400">
-            Aktuell: {selectedType.label}. Das Icon passt sich beim Wechsel des QR-Code-Typs automatisch an.
+            {isDe
+              ? `Aktuell: ${selectedType.label}. Das Icon passt sich beim Wechsel des QR-Code-Typs automatisch an.`
+              : `Current: ${selectedType.label}. The icon updates automatically when you switch QR code types.`}
           </span>
         </span>
       </label>
@@ -100,7 +105,9 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
             <img src={displayImage} alt="" className="mb-3 h-14 max-w-[160px] object-contain" />
             <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{displayName}</p>
             {logo.useTypeIcon ? (
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Automatisch aus dem QR-Code-Typ erzeugt</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                {isDe ? "Automatisch aus dem QR-Code-Typ erzeugt" : "Generated automatically from the current QR code type"}
+              </p>
             ) : null}
           </>
         ) : (
@@ -108,8 +115,8 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
             <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-md bg-gradient-to-br from-white to-teal-50 text-teal-700 shadow-sm dark:from-slate-900 dark:to-teal-950 dark:text-teal-200">
               <ImagePlus aria-hidden="true" className="h-5 w-5" />
             </span>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">Logo per Drag & Drop hochladen</p>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">PNG, JPG oder SVG</p>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{isDe ? "Logo per Drag & Drop hochladen" : "Upload logo via drag & drop"}</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{isDe ? "PNG, JPG oder SVG" : "PNG, JPG, or SVG"}</p>
           </>
         )}
       </div>
@@ -121,7 +128,7 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
           className="premium-button inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
           <Upload aria-hidden="true" className="h-4 w-4" />
-          Datei wählen
+          {isDe ? "Datei wählen" : "Choose file"}
         </button>
         {logo.image ? (
           <button
@@ -130,7 +137,7 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
             className="premium-button inline-flex min-h-10 items-center gap-2 rounded-md border border-red-200 bg-white/88 px-3 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 dark:border-red-900/70 dark:bg-slate-900/82 dark:text-red-300"
           >
             <Trash2 aria-hidden="true" className="h-4 w-4" />
-            {logo.useTypeIcon ? "Upload entfernen" : "Logo entfernen"}
+            {logo.useTypeIcon ? (isDe ? "Upload entfernen" : "Remove upload") : isDe ? "Logo entfernen" : "Remove logo"}
           </button>
         ) : null}
       </div>
@@ -138,14 +145,14 @@ export function LogoUploader({ logo, contentType, design, onChange }: LogoUpload
       {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/30 dark:text-red-100">{error}</p> : null}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <RangeField label="Logo-Größe" value={Math.round(logo.imageSize * 100)} min={8} max={36} unit="%" onChange={(value) => onChange({ ...logo, imageSize: value / 100 })} />
-        <RangeField label="Logo-Abstand" value={logo.margin} min={0} max={24} unit=" px" onChange={(margin) => onChange({ ...logo, margin })} />
+        <RangeField label={isDe ? "Logo-Größe" : "Logo Size"} value={Math.round(logo.imageSize * 100)} min={8} max={36} unit="%" onChange={(value) => onChange({ ...logo, imageSize: value / 100 })} />
+        <RangeField label={isDe ? "Logo-Abstand" : "Logo Margin"} value={logo.margin} min={0} max={24} unit=" px" onChange={(margin) => onChange({ ...logo, margin })} />
       </div>
       <SwitchField
-        label="Weisser Hintergrund hinter Logo"
+        label={isDe ? "Weisser Hintergrund hinter Logo" : "White background behind logo"}
         checked={logo.hideBackgroundDots}
         onChange={(hideBackgroundDots) => onChange({ ...logo, hideBackgroundDots })}
-        hint="Entfernt QR-Module im Logo-Bereich für bessere Lesbarkeit."
+        hint={isDe ? "Entfernt QR-Module im Logo-Bereich für bessere Lesbarkeit." : "Removes QR modules behind the logo for better readability."}
       />
     </div>
   );

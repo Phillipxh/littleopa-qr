@@ -1,4 +1,4 @@
-import type { QRContentType, QRFormData, ValidationResult, WifiEncryption } from "../types";
+import type { AppLanguage, QRContentType, QRFormData, ValidationResult, WifiEncryption } from "../types";
 
 const trim = (value: string) => value.trim();
 
@@ -133,7 +133,7 @@ export const generateCalendarEvent = (data: QRFormData): string =>
   [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Local QR Code Generator//DE",
+    "PRODID:-//Local QR Code Generator//EN",
     "BEGIN:VEVENT",
     `SUMMARY:${escapeICal(data.eventTitle)}`,
     data.eventLocation ? `LOCATION:${escapeICal(data.eventLocation)}` : "",
@@ -177,7 +177,7 @@ const buildHtmlDataUrl = (title: string, links: { label: string; url: string }[]
       return `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a></li>`;
     })
     .join("");
-  const html = `<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(safeTitle)}</title><body style="font-family:system-ui;margin:32px;line-height:1.5"><h1>${escapeHtml(safeTitle)}</h1><ul>${rows}</ul></body></html>`;
+  const html = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(safeTitle)}</title><body style="font-family:system-ui;margin:32px;line-height:1.5"><h1>${escapeHtml(safeTitle)}</h1><ul>${rows}</ul></body></html>`;
   return `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
 };
 
@@ -251,7 +251,7 @@ export const buildQRValue = (type: QRContentType, data: QRFormData): string => {
       return buildSocialUrl(data);
     case "app":
       if (data.appStoreLandingPage && data.appStoreIosUrl.trim() && data.appStoreAndroidUrl.trim()) {
-        return buildHtmlDataUrl("App herunterladen", [
+        return buildHtmlDataUrl("Download app", [
           { label: "iOS App Store", url: data.appStoreIosUrl },
           { label: "Google Play", url: data.appStoreAndroidUrl },
         ]);
@@ -285,35 +285,36 @@ const hasUrl = (value: string): boolean => {
 
 const isEmail = (value: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
-export const validateQRInput = (type: QRContentType, data: QRFormData): ValidationResult => {
+export const validateQRInput = (type: QRContentType, data: QRFormData, language: AppLanguage = "en"): ValidationResult => {
+  const isDe = language === "de";
   const errors: string[] = [];
   const warnings: string[] = [];
 
   switch (type) {
     case "url":
-      if (!data.url.trim()) errors.push("Bitte gib eine Website-URL ein.");
-      else if (!hasUrl(data.url)) errors.push("Die URL ist nicht gültig.");
+      if (!data.url.trim()) errors.push(isDe ? "Bitte gib eine Website-URL ein." : "Please enter a website URL.");
+      else if (!hasUrl(data.url)) errors.push(isDe ? "Die URL ist nicht gültig." : "The URL is invalid.");
       break;
     case "text":
-      if (!data.text.trim()) errors.push("Bitte gib Text ein.");
-      if (data.text.length > 900) warnings.push("Sehr langer Text kann die Scanbarkeit reduzieren.");
+      if (!data.text.trim()) errors.push(isDe ? "Bitte gib Text ein." : "Please enter text.");
+      if (data.text.length > 900) warnings.push(isDe ? "Sehr langer Text kann die Scanbarkeit reduzieren." : "Very long text can reduce scan reliability.");
       break;
     case "email":
-      if (!data.emailTo.trim()) errors.push("Bitte gib einen Empfänger ein.");
-      else if (!isEmail(data.emailTo)) errors.push("Die E-Mail-Adresse ist nicht gültig.");
+      if (!data.emailTo.trim()) errors.push(isDe ? "Bitte gib einen Empfänger ein." : "Please enter a recipient.");
+      else if (!isEmail(data.emailTo)) errors.push(isDe ? "Die E-Mail-Adresse ist nicht gültig." : "The email address is invalid.");
       break;
     case "phone":
-      if (!compactPhone(data.phone)) errors.push("Bitte gib eine Telefonnummer ein.");
+      if (!compactPhone(data.phone)) errors.push(isDe ? "Bitte gib eine Telefonnummer ein." : "Please enter a phone number.");
       break;
     case "sms":
-      if (!compactPhone(data.smsPhone)) errors.push("Bitte gib eine Telefonnummer für die SMS ein.");
+      if (!compactPhone(data.smsPhone)) errors.push(isDe ? "Bitte gib eine Telefonnummer für die SMS ein." : "Please enter a phone number for SMS.");
       break;
     case "whatsapp":
-      if (!compactPhone(data.whatsappPhone)) errors.push("Bitte gib eine WhatsApp-Telefonnummer ein.");
+      if (!compactPhone(data.whatsappPhone)) errors.push(isDe ? "Bitte gib eine WhatsApp-Telefonnummer ein." : "Please enter a WhatsApp phone number.");
       break;
     case "wifi":
-      if (!data.wifiSsid.trim()) errors.push("Bitte gib den Netzwerknamen ein.");
-      if (data.wifiEncryption !== "nopass" && !data.wifiPassword.trim()) warnings.push("Ohne Passwort ist WPA/WEP nicht sinnvoll.");
+      if (!data.wifiSsid.trim()) errors.push(isDe ? "Bitte gib den Netzwerknamen ein." : "Please enter the network name.");
+      if (data.wifiEncryption !== "nopass" && !data.wifiPassword.trim()) warnings.push(isDe ? "Ohne Passwort ist WPA/WEP nicht sinnvoll." : "WPA/WEP without password is usually not useful.");
       break;
     case "vcard":
     case "mecard":
@@ -327,50 +328,50 @@ export const validateQRInput = (type: QRContentType, data: QRFormData): Validati
           data.vcardEmail,
         ].some((value) => value.trim())
       ) {
-        errors.push("Bitte gib mindestens einen Namen, eine Firma, Telefon oder E-Mail ein.");
+        errors.push(isDe ? "Bitte gib mindestens einen Namen, eine Firma, Telefon oder E-Mail ein." : "Please enter at least a name, company, phone, or email.");
       }
-      if (data.vcardEmail && !isEmail(data.vcardEmail)) errors.push("Die Kontakt-E-Mail ist nicht gültig.");
+      if (data.vcardEmail && !isEmail(data.vcardEmail)) errors.push(isDe ? "Die Kontakt-E-Mail ist nicht gültig." : "The contact email is invalid.");
       break;
     case "event":
-      if (!data.eventTitle.trim()) errors.push("Bitte gib einen Event-Titel ein.");
-      if (!data.eventStart) errors.push("Bitte gib den Startzeitpunkt ein.");
-      if (!data.eventEnd) errors.push("Bitte gib den Endzeitpunkt ein.");
+      if (!data.eventTitle.trim()) errors.push(isDe ? "Bitte gib einen Event-Titel ein." : "Please enter an event title.");
+      if (!data.eventStart) errors.push(isDe ? "Bitte gib den Startzeitpunkt ein." : "Please enter a start date/time.");
+      if (!data.eventEnd) errors.push(isDe ? "Bitte gib den Endzeitpunkt ein." : "Please enter an end date/time.");
       if (data.eventStart && data.eventEnd && new Date(data.eventEnd) <= new Date(data.eventStart)) {
-        errors.push("Der Endzeitpunkt muss nach dem Start liegen.");
+        errors.push(isDe ? "Der Endzeitpunkt muss nach dem Start liegen." : "The end date/time must be after the start date/time.");
       }
       break;
     case "geo": {
       const lat = Number(data.geoLatitude);
       const lng = Number(data.geoLongitude);
-      if (!Number.isFinite(lat) || lat < -90 || lat > 90) errors.push("Latitude muss zwischen -90 und 90 liegen.");
-      if (!Number.isFinite(lng) || lng < -180 || lng > 180) errors.push("Longitude muss zwischen -180 und 180 liegen.");
+      if (!Number.isFinite(lat) || lat < -90 || lat > 90) errors.push(isDe ? "Latitude muss zwischen -90 und 90 liegen." : "Latitude must be between -90 and 90.");
+      if (!Number.isFinite(lng) || lng < -180 || lng > 180) errors.push(isDe ? "Longitude muss zwischen -180 und 180 liegen." : "Longitude must be between -180 and 180.");
       break;
     }
     case "social":
-      if (!data.socialValue.trim()) errors.push("Bitte gib ein Profil oder eine URL ein.");
+      if (!data.socialValue.trim()) errors.push(isDe ? "Bitte gib ein Profil oder eine URL ein." : "Please enter a profile name or URL.");
       break;
     case "app":
       if (!data.appStoreIosUrl.trim() && !data.appStoreAndroidUrl.trim()) {
-        errors.push("Bitte gib mindestens einen App-Store-Link ein.");
+        errors.push(isDe ? "Bitte gib mindestens einen App-Store-Link ein." : "Please enter at least one app store link.");
       }
-      if (data.appStoreLandingPage) warnings.push("Die Landingpage ist eine Daten-URL und wird nicht gehostet.");
+      if (data.appStoreLandingPage) warnings.push(isDe ? "Die Landingpage ist eine Daten-URL und wird nicht gehostet." : "The landing page is a data URL and is not hosted.");
       break;
     case "payment":
-      if (!data.paypalLink.trim()) errors.push("Bitte gib einen PayPal.me-Link ein.");
-      else if (!hasUrl(data.paypalLink)) errors.push("Der PayPal-Link ist nicht gültig.");
-      warnings.push("Die App verarbeitet keine Zahlungen, sie codiert nur den Zahlungslink.");
+      if (!data.paypalLink.trim()) errors.push(isDe ? "Bitte gib einen PayPal.me-Link ein." : "Please enter a PayPal.me link.");
+      else if (!hasUrl(data.paypalLink)) errors.push(isDe ? "Der PayPal-Link ist nicht gültig." : "The PayPal link is invalid.");
+      warnings.push(isDe ? "Die App verarbeitet keine Zahlungen, sie codiert nur den Zahlungslink." : "This app does not process payments; it only encodes the payment link.");
       break;
     case "crypto":
-      if (!data.bitcoinAddress.trim()) errors.push("Bitte gib eine Bitcoin-Adresse ein.");
+      if (!data.bitcoinAddress.trim()) errors.push(isDe ? "Bitte gib eine Bitcoin-Adresse ein." : "Please enter a Bitcoin address.");
       break;
     case "file":
-      if (!data.fileUrl.trim()) errors.push("Bitte gib eine Datei-URL ein.");
-      else if (!hasUrl(data.fileUrl)) errors.push("Die Datei-URL ist nicht gültig.");
-      warnings.push("Es werden keine Dateien hochgeladen, nur Links codiert.");
+      if (!data.fileUrl.trim()) errors.push(isDe ? "Bitte gib eine Datei-URL ein." : "Please enter a file URL.");
+      else if (!hasUrl(data.fileUrl)) errors.push(isDe ? "Die Datei-URL ist nicht gültig." : "The file URL is invalid.");
+      warnings.push(isDe ? "Es werden keine Dateien hochgeladen, nur Links codiert." : "No files are uploaded; only links are encoded.");
       break;
     case "multilink":
-      if (!data.multiLinks.some((link) => link.url.trim())) errors.push("Bitte gib mindestens einen Link ein.");
-      if (data.multiLinksUseHtml) warnings.push("Die HTML-Variante ist eine Daten-URL und nicht gehostet.");
+      if (!data.multiLinks.some((link) => link.url.trim())) errors.push(isDe ? "Bitte gib mindestens einen Link ein." : "Please enter at least one link.");
+      if (data.multiLinksUseHtml) warnings.push(isDe ? "Die HTML-Variante ist eine Daten-URL und nicht gehostet." : "The HTML variant is a data URL and not hosted.");
       break;
     default:
       break;

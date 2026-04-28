@@ -1,30 +1,31 @@
-import type { QRDesignOptions, QREyeInnerStyle, QREyeOuterStyle, QRModuleStyle } from "../types";
+import type { AppLanguage, QRDesignOptions, QREyeInnerStyle, QREyeOuterStyle, QRModuleStyle } from "../types";
 
 interface ShapeSelectorProps {
+  language: AppLanguage;
   design: QRDesignOptions;
   onChange: (design: QRDesignOptions) => void;
 }
 
 const moduleOptions: { value: QRModuleStyle; label: string; hint: string }[] = [
-  { value: "square", label: "Quadratisch", hint: "klare Kanten" },
-  { value: "dots", label: "Punkte", hint: "weich und modern" },
-  { value: "rounded", label: "Abgerundet", hint: "sanfte Module" },
-  { value: "classy", label: "Klassisch", hint: "technisch markant" },
-  { value: "classy-rounded", label: "Klassisch rund", hint: "markant + weich" },
-  { value: "extra-rounded", label: "Extra-rounded", hint: "sehr organisch" },
+  { value: "square", label: "Square", hint: "clean edges" },
+  { value: "dots", label: "Dots", hint: "soft and modern" },
+  { value: "rounded", label: "Rounded", hint: "smooth modules" },
+  { value: "classy", label: "Classy", hint: "technical look" },
+  { value: "classy-rounded", label: "Classy Rounded", hint: "sharp + soft" },
+  { value: "extra-rounded", label: "Extra Rounded", hint: "very organic" },
 ];
 
 const outerOptions: { value: QREyeOuterStyle; label: string; hint: string }[] = [
-  { value: "square", label: "Quadrat", hint: "maximal robust" },
-  { value: "dot", label: "Punkt", hint: "kompakt" },
-  { value: "rounded", label: "Rund", hint: "freundlich" },
-  { value: "extra-rounded", label: "Extra rund", hint: "premium" },
+  { value: "square", label: "Square", hint: "maximum robustness" },
+  { value: "dot", label: "Dot", hint: "compact" },
+  { value: "rounded", label: "Rounded", hint: "friendly" },
+  { value: "extra-rounded", label: "Extra Rounded", hint: "premium" },
 ];
 
 const innerOptions: { value: QREyeInnerStyle; label: string; hint: string }[] = [
-  { value: "square", label: "Quadrat", hint: "präzise" },
-  { value: "dot", label: "Punkt", hint: "weich" },
-  { value: "rounded", label: "Rund", hint: "balanciert" },
+  { value: "square", label: "Square", hint: "precise" },
+  { value: "dot", label: "Dot", hint: "soft" },
+  { value: "rounded", label: "Rounded", hint: "balanced" },
 ];
 
 const moduleCells = [
@@ -161,28 +162,55 @@ function VisualOptions<T extends string>({
   );
 }
 
-export function ShapeSelector({ design, onChange }: ShapeSelectorProps) {
+export function ShapeSelector({ language, design, onChange }: ShapeSelectorProps) {
+  const isDe = language === "de";
+  const moduleOptionsLocalized: { value: QRModuleStyle; label: string; hint: string }[] = isDe
+    ? [
+        { value: "square", label: "Quadratisch", hint: "klare Kanten" },
+        { value: "dots", label: "Punkte", hint: "weich und modern" },
+        { value: "rounded", label: "Abgerundet", hint: "sanfte Module" },
+        { value: "classy", label: "Klassisch", hint: "technisch markant" },
+        { value: "classy-rounded", label: "Klassisch rund", hint: "markant + weich" },
+        { value: "extra-rounded", label: "Extra-rounded", hint: "sehr organisch" },
+      ]
+    : moduleOptions;
+  const outerOptionsLocalized: { value: QREyeOuterStyle; label: string; hint: string }[] = isDe
+    ? [
+        { value: "square", label: "Quadrat", hint: "maximal robust" },
+        { value: "dot", label: "Punkt", hint: "kompakt" },
+        { value: "rounded", label: "Rund", hint: "freundlich" },
+        { value: "extra-rounded", label: "Extra rund", hint: "premium" },
+      ]
+    : outerOptions;
+  const innerOptionsLocalized: { value: QREyeInnerStyle; label: string; hint: string }[] = isDe
+    ? [
+        { value: "square", label: "Quadrat", hint: "präzise" },
+        { value: "dot", label: "Punkt", hint: "weich" },
+        { value: "rounded", label: "Rund", hint: "balanciert" },
+      ]
+    : innerOptions;
+
   return (
     <div className="grid gap-5">
       <VisualOptions
-        label="QR-Modul-Form"
+        label={isDe ? "QR-Modul-Form" : "QR Module Shape"}
         value={design.moduleStyle}
-        options={moduleOptions}
+        options={moduleOptionsLocalized}
         onChange={(moduleStyle) => onChange({ ...design, moduleStyle })}
         preview={(moduleStyle) => <ModulePreview type={moduleStyle} />}
       />
       <div className="grid gap-5 lg:grid-cols-2">
         <VisualOptions
-          label="Eckform außen"
+          label={isDe ? "Eckform außen" : "Outer Eye Shape"}
           value={design.eyeOuterStyle}
-          options={outerOptions}
+          options={outerOptionsLocalized}
           onChange={(eyeOuterStyle) => onChange({ ...design, eyeOuterStyle })}
           preview={(eyeOuterStyle) => <EyePreview outer={eyeOuterStyle} inner={design.eyeInnerStyle} />}
         />
         <VisualOptions
-          label="Eckform innen"
+          label={isDe ? "Eckform innen" : "Inner Eye Shape"}
           value={design.eyeInnerStyle}
-          options={innerOptions}
+          options={innerOptionsLocalized}
           onChange={(eyeInnerStyle) => onChange({ ...design, eyeInnerStyle })}
           preview={(eyeInnerStyle) => <EyePreview outer={design.eyeOuterStyle} inner={eyeInnerStyle} />}
         />

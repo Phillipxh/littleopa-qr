@@ -10,11 +10,11 @@ import { LogoUploader } from "./components/LogoUploader";
 import { QRPreview } from "./components/QRPreview";
 import { Section } from "./components/Section";
 import type { UpdateQRField } from "./components/forms/formTypes";
-import { contentTypes } from "./data/contentTypes";
+import { getContentTypes } from "./data/contentTypes";
 import { defaultFormData, defaultLogo } from "./data/defaults";
 import { getExampleData } from "./data/examples";
 import { defaultDesign } from "./data/templates";
-import type { HistoryItem, QRContentType, QRDesignOptions, QRFormData, QRLogoOptions, StoredSettings } from "./types";
+import type { AppLanguage, HistoryItem, QRContentType, QRDesignOptions, QRFormData, QRLogoOptions, StoredSettings } from "./types";
 import { buildQRValue, validateQRInput } from "./utils/qrBuilders";
 import { evaluateQuality } from "./utils/quality";
 import { randomizeDesign } from "./utils/random";
@@ -35,6 +35,7 @@ const freshSettings = (): StoredSettings => ({
   fileName: "qr-code",
   liveUpdate: true,
   darkMode: false,
+  language: "en",
 });
 
 const normalizeLogo = (logo: QRLogoOptions): QRLogoOptions => ({
@@ -46,6 +47,7 @@ const normalizeLogo = (logo: QRLogoOptions): QRLogoOptions => ({
 const normalizeSettings = (settings: StoredSettings): StoredSettings => ({
   ...settings,
   logo: normalizeLogo(settings.logo),
+  language: settings.language === "en" ? "en" : "de",
 });
 
 const resolvePreviewLogo = (logo: QRLogoOptions, type: QRContentType, design: QRDesignOptions): QRLogoOptions =>
@@ -60,23 +62,28 @@ function App() {
   const [fileName, setFileName] = useState(initial.fileName || "qr-code");
   const [liveUpdate, setLiveUpdate] = useState(initial.liveUpdate);
   const [darkMode, setDarkMode] = useState(initial.darkMode);
+  const [language, setLanguage] = useState<AppLanguage>(initial.language);
   const [history, setHistory] = useState<HistoryItem[]>(() => loadHistory());
   const qrCodeRef = useRef<QRCodeStyling | null>(null);
 
   const value = useMemo(() => buildQRValue(contentType, data), [contentType, data]);
-  const validation = useMemo(() => validateQRInput(contentType, data), [contentType, data]);
+  const validation = useMemo(() => validateQRInput(contentType, data, language), [contentType, data, language]);
   const resolvedLogo = useMemo(() => resolvePreviewLogo(logo, contentType, design), [logo, contentType, design]);
-  const quality = useMemo(() => evaluateQuality(value, design, resolvedLogo, validation), [value, design, resolvedLogo, validation]);
+  const quality = useMemo(() => evaluateQuality(value, design, resolvedLogo, validation, language), [value, design, resolvedLogo, validation, language]);
   const [preview, setPreview] = useState<PreviewState>({ value, design, logo: resolvedLogo });
 
   const settings = useMemo<StoredSettings>(
-    () => ({ contentType, data, design, logo, fileName, liveUpdate, darkMode }),
-    [contentType, data, design, logo, fileName, liveUpdate, darkMode],
+    () => ({ contentType, data, design, logo, fileName, liveUpdate, darkMode, language }),
+    [contentType, data, design, logo, fileName, liveUpdate, darkMode, language],
   );
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   useEffect(() => {
     const handle = window.setTimeout(() => saveSettings(settings), 250);
@@ -102,6 +109,7 @@ function App() {
     setFileName(clean.fileName);
     setLiveUpdate(clean.liveUpdate);
     setDarkMode(clean.darkMode);
+    setLanguage(clean.language);
     setPreview({ value: buildQRValue(clean.contentType, clean.data), design: clean.design, logo: resolvePreviewLogo(clean.logo, clean.contentType, clean.design) });
   };
 
@@ -111,7 +119,7 @@ function App() {
 
   const addHistoryItem = () => {
     if (!validation.isValid || !value.trim()) return;
-    const meta = contentTypes.find((item) => item.id === contentType);
+    const meta = getContentTypes(language).find((item) => item.id === contentType);
     const item: HistoryItem = {
       id: `${Date.now()}`,
       title: `${meta?.label ?? "QR"} · ${fileName || "qr-code"}`,
@@ -149,6 +157,7 @@ function App() {
     setFileName(normalized.fileName || "qr-code");
     setLiveUpdate(normalized.liveUpdate);
     setDarkMode(normalized.darkMode);
+    setLanguage(normalized.language);
     setPreview({
       value: buildQRValue(normalized.contentType, normalized.data),
       design: normalized.design,
@@ -161,7 +170,9 @@ function App() {
       header={
         <Header
           darkMode={darkMode}
+          language={language}
           onToggleDarkMode={() => setDarkMode((current) => !current)}
+          onLanguageChange={setLanguage}
           onLoadExample={loadExample}
           onReset={reset}
           onRandomize={() => setDesign((current) => randomizeDesign(current))}
@@ -169,16 +180,17 @@ function App() {
       }
       left={
         <>
-          <ContentTypeSelector value={contentType} onChange={setContentType} />
-          <DynamicQRForm type={contentType} data={data} validation={validation} update={updateField} />
-          <DesignPanel design={design} onChange={setDesign} />
-          <Section eyebrow="4. Logo hinzufügen" title="Logo im QR-Code">
-            <LogoUploader logo={logo} contentType={contentType} design={design} onChange={setLogo} />
+          <ContentTypeSelector language={language} value={contentType} onChange={setContentType} />
+          <DynamicQRForm type={contentType} data={data} language={language} validation={validation} update={updateField} />
+          <DesignPanel language={language} design={design} onChange={setDesign} />
+          <Section eyebrow={language === "de" ? "4. Logo hinzufügen" : "4. Add logo"} title={language === "de" ? "Logo im QR-Code" : "Logo in QR code"}>
+            <LogoUploader language={language} logo={logo} contentType={contentType} design={design} onChange={setLogo} />
           </Section>
         </>
       }
       preview={
         <QRPreview
+          language={language}
           value={preview.value}
           design={preview.design}
           logo={preview.logo}
@@ -190,6 +202,7 @@ function App() {
       }
       bottomBar={
         <DownloadButtons
+          language={language}
           qrCodeRef={qrCodeRef}
           design={preview.design}
           validation={validation}

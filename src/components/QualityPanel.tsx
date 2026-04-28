@@ -6,14 +6,14 @@ interface QualityPanelProps {
 }
 
 const tone = {
-  "Sehr gut": "bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-100 dark:border-emerald-900/70",
-  Gut: "bg-teal-50 text-teal-900 border-teal-200 dark:bg-teal-950/30 dark:text-teal-100 dark:border-teal-900/70",
-  Risiko: "bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/30 dark:text-amber-100 dark:border-amber-900/70",
-  Kritisch: "bg-red-50 text-red-900 border-red-200 dark:bg-red-950/30 dark:text-red-100 dark:border-red-900/70",
+  Excellent: "bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-100 dark:border-emerald-900/70",
+  Good: "bg-teal-50 text-teal-900 border-teal-200 dark:bg-teal-950/30 dark:text-teal-100 dark:border-teal-900/70",
+  Risky: "bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-950/30 dark:text-amber-100 dark:border-amber-900/70",
+  Critical: "bg-red-50 text-red-900 border-red-200 dark:bg-red-950/30 dark:text-red-100 dark:border-red-900/70",
 };
 
 export function QualityPanel({ quality }: QualityPanelProps) {
-  const Icon = quality.level === "Sehr gut" || quality.level === "Gut" ? CheckCircle2 : AlertTriangle;
+  const Icon = quality.level === "Excellent" || quality.level === "Good" ? CheckCircle2 : AlertTriangle;
 
   return (
     <section className="premium-card p-4">
@@ -21,7 +21,7 @@ export function QualityPanel({ quality }: QualityPanelProps) {
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Icon aria-hidden="true" className="h-5 w-5" />
-            <h2 className="text-base font-semibold">Qualität: {quality.level}</h2>
+            <h2 className="text-base font-semibold">Quality: {quality.level}</h2>
           </div>
           <span className="text-sm font-bold">{quality.score}/100</span>
         </div>
@@ -32,7 +32,7 @@ export function QualityPanel({ quality }: QualityPanelProps) {
       <div className="mt-4 grid gap-3">
         {quality.warnings.length ? (
           <div>
-            <p className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Hinweise</p>
+            <p className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Warnings</p>
             <ul className="grid gap-2">
               {quality.warnings.map((warning) => (
                 <li key={warning} className="flex items-start gap-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
@@ -45,7 +45,7 @@ export function QualityPanel({ quality }: QualityPanelProps) {
         ) : null}
         {quality.tips.length ? (
           <div>
-            <p className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Tipps</p>
+            <p className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-100">Tips</p>
             <ul className="grid gap-2">
               {quality.tips.map((tip) => (
                 <li key={tip} className="flex items-start gap-2 text-sm leading-6 text-slate-600 dark:text-slate-300">

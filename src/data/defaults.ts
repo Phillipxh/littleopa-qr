@@ -7,7 +7,7 @@ export const defaultFormData: QRFormData = {
   utmCampaign: "",
   utmTerm: "",
   utmContent: "",
-  text: "Hallo! Dieser QR-Code wurde lokal im Browser erstellt.",
+  text: "Hello! This QR code was created locally in your browser.",
   emailTo: "",
   emailSubject: "",
   emailMessage: "",
@@ -55,10 +55,10 @@ export const defaultFormData: QRFormData = {
   bitcoinMessage: "",
   fileUrl: "",
   multiLinksUseHtml: false,
-  multiLinksTitle: "Meine Links",
+  multiLinksTitle: "My Links",
   multiLinks: [
     { id: "link-1", label: "Website", url: "https://example.com" },
-    { id: "link-2", label: "Kontakt", url: "mailto:kontakt@example.com" },
+    { id: "link-2", label: "Contact", url: "mailto:contact@example.com" },
   ],
 };
 

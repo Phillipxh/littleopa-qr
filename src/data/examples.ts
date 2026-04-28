@@ -21,33 +21,33 @@ export const getExampleData = (type: QRContentType, current: QRFormData): QRForm
     case "url":
       return {
         ...current,
-        url: "https://example.com/kampagne",
+        url: "https://example.com/campaign",
         utmSource: "newsletter",
         utmMedium: "email",
-        utmCampaign: "frühling",
+        utmCampaign: "spring",
         utmTerm: "",
         utmContent: "hero-button",
       };
     case "text":
-      return { ...current, text: "Danke fürs Scannen. Weitere Informationen findest du direkt vor Ort." };
+      return { ...current, text: "Thanks for scanning. You can find more information directly on site." };
     case "email":
       return {
         ...current,
         emailTo: "kontakt@example.com",
-        emailSubject: "Rückfrage zum Angebot",
-        emailMessage: "Hallo, ich interessiere mich für Ihr Angebot.",
+        emailSubject: "Question about your offer",
+        emailMessage: "Hello, I am interested in your offer.",
       };
     case "phone":
       return { ...current, phone: "+493012345678" };
     case "sms":
-      return { ...current, smsPhone: "+493012345678", smsMessage: "Hallo, ich habe den QR-Code gescannt." };
+      return { ...current, smsPhone: "+493012345678", smsMessage: "Hello, I scanned the QR code." };
     case "whatsapp":
-      return { ...current, whatsappPhone: "+491701234567", whatsappMessage: "Hallo, ich möchte mehr erfahren." };
+      return { ...current, whatsappPhone: "+491701234567", whatsappMessage: "Hello, I would like to learn more." };
     case "wifi":
       return {
         ...current,
         wifiSsid: "Office Guest",
-        wifiPassword: "sicheres-passwort",
+        wifiPassword: "secure-password",
         wifiEncryption: "WPA",
         wifiHidden: false,
       };
@@ -57,24 +57,24 @@ export const getExampleData = (type: QRContentType, current: QRFormData): QRForm
         ...current,
         vcardFirstName: "Mara",
         vcardLastName: "Schneider",
-        vcardOrganization: "Beispiel GmbH",
+        vcardOrganization: "Example LLC",
         vcardPosition: "Marketing Lead",
         vcardPhone: "+493012345678",
         vcardMobile: "+491701234567",
         vcardEmail: "mara.schneider@example.com",
         vcardWebsite: "https://example.com",
-        vcardStreet: "Musterstraße 12",
+        vcardStreet: "Example Street 12",
         vcardPostalCode: "10115",
         vcardCity: "Berlin",
-        vcardCountry: "Deutschland",
-        vcardNote: "Erstellt mit dem lokalen QR-Code-Generator.",
+        vcardCountry: "Germany",
+        vcardNote: "Created with the local QR code generator.",
       };
     case "event":
       return {
         ...current,
-        eventTitle: "Produkt-Demo",
+        eventTitle: "Product Demo",
         eventLocation: "Berlin",
-        eventDescription: "Kurze Demo mit anschließendem Q&A.",
+        eventDescription: "Short demo followed by Q&A.",
         eventStart: dates.start,
         eventEnd: dates.end,
       };
@@ -96,19 +96,19 @@ export const getExampleData = (type: QRContentType, current: QRFormData): QRForm
         ...current,
         bitcoinAddress: "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080",
         bitcoinAmount: "0.001",
-        bitcoinLabel: "Spende",
-        bitcoinMessage: "Danke",
+        bitcoinLabel: "Donation",
+        bitcoinMessage: "Thanks",
       };
     case "file":
       return { ...current, fileUrl: "https://example.com/download/info.pdf" };
     case "multilink":
       return {
         ...current,
-        multiLinksTitle: "Wichtige Links",
+        multiLinksTitle: "Important Links",
         multiLinksUseHtml: false,
         multiLinks: [
           { id: "link-1", label: "Website", url: "https://example.com" },
-          { id: "link-2", label: "Kontakt", url: "mailto:kontakt@example.com" },
+          { id: "link-2", label: "Contact", url: "mailto:contact@example.com" },
           { id: "link-3", label: "Support", url: "https://example.com/support" },
         ],
       };

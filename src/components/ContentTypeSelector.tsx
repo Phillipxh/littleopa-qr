@@ -1,10 +1,11 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { contentTypes } from "../data/contentTypes";
-import type { QRContentType } from "../types";
+import { getContentTypes } from "../data/contentTypes";
+import type { AppLanguage, QRContentType } from "../types";
 import { Section } from "./Section";
 
 interface ContentTypeSelectorProps {
+  language: AppLanguage;
   value: QRContentType;
   onChange: (value: QRContentType) => void;
 }
@@ -21,38 +22,62 @@ const groups: ContentTypeGroup[] = [
   {
     id: "standard",
     title: "Links & Text",
-    description: "Schnelle Codes für Websites, Dateien und mehrere Links.",
+    description: "Quick codes for websites, files, and multiple links.",
     items: ["url", "text", "file", "multilink"],
     accent: "from-teal-600 to-cyan-600",
   },
   {
     id: "communication",
-    title: "Kommunikation",
-    description: "Direkt schreiben, anrufen oder Profile öffnen.",
+    title: "Communication",
+    description: "Send messages, call directly, or open profiles.",
     items: ["email", "phone", "sms", "whatsapp", "social"],
     accent: "from-blue-600 to-indigo-600",
   },
   {
     id: "access",
-    title: "Zugang & Kontakt",
-    description: "WLAN, Kontaktkarten und Standortdaten.",
+    title: "Access & Contact",
+    description: "Wi-Fi, contact cards, and location data.",
     items: ["wifi", "vcard", "mecard", "geo"],
     accent: "from-emerald-600 to-teal-700",
   },
   {
     id: "business",
-    title: "Business & Transaktion",
-    description: "Events, Apps, Zahlungslinks und Bitcoin URIs.",
+    title: "Business & Transactions",
+    description: "Events, apps, payment links, and Bitcoin URIs.",
     items: ["event", "app", "payment", "crypto"],
     accent: "from-amber-600 to-rose-600",
   },
 ];
 
-const metaById = new Map(contentTypes.map((type) => [type.id, type]));
-
 const findGroupId = (type: QRContentType): string => groups.find((group) => group.items.includes(type))?.id ?? groups[0].id;
 
-export function ContentTypeSelector({ value, onChange }: ContentTypeSelectorProps) {
+export function ContentTypeSelector({ language, value, onChange }: ContentTypeSelectorProps) {
+  const contentTypes = getContentTypes(language);
+  const metaById = useMemo(() => new Map(contentTypes.map((type) => [type.id, type])), [contentTypes]);
+  const copy =
+    language === "de"
+      ? {
+          eyebrow: "1. Inhalt auswählen",
+          title: "QR-Code-Typ",
+          groups: {
+            standard: { title: "Links & Text", description: "Schnelle Codes für Websites, Dateien und mehrere Links." },
+            communication: { title: "Kommunikation", description: "Direkt schreiben, anrufen oder Profile öffnen." },
+            access: { title: "Zugang & Kontakt", description: "WLAN, Kontaktkarten und Standortdaten." },
+            business: { title: "Business & Transaktion", description: "Events, Apps, Zahlungslinks und Bitcoin URIs." },
+          },
+          active: "Aktiv",
+        }
+      : {
+          eyebrow: "1. Select content",
+          title: "QR Code Type",
+          groups: {
+            standard: { title: "Links & Text", description: "Quick codes for websites, files, and multiple links." },
+            communication: { title: "Communication", description: "Send messages, call directly, or open profiles." },
+            access: { title: "Access & Contact", description: "Wi-Fi, contact cards, and location data." },
+            business: { title: "Business & Transactions", description: "Events, apps, payment links, and Bitcoin URIs." },
+          },
+          active: "Active",
+        };
   const [openGroupId, setOpenGroupId] = useState(() => findGroupId(value));
   const selectedType = metaById.get(value) ?? contentTypes[0];
   const SelectedIcon = selectedType.icon;
@@ -63,7 +88,7 @@ export function ContentTypeSelector({ value, onChange }: ContentTypeSelectorProp
   }, [activeGroupId]);
 
   return (
-    <Section eyebrow="1. Inhalt auswählen" title="QR-Code-Typ">
+    <Section eyebrow={copy.eyebrow} title={copy.title}>
       <div className="grid gap-3">
         <div className="shimmer flex items-start gap-3 rounded-lg border border-teal-200 bg-gradient-to-br from-teal-50 via-white to-blue-50 p-3 text-teal-950 shadow-sm dark:border-teal-800 dark:from-teal-950/40 dark:via-slate-900 dark:to-indigo-950/30 dark:text-teal-50">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-teal-600 to-blue-700 text-white shadow-lg shadow-teal-900/20">
@@ -98,14 +123,16 @@ export function ContentTypeSelector({ value, onChange }: ContentTypeSelectorProp
                     <span className={`h-8 w-1.5 shrink-0 rounded-full bg-gradient-to-b ${group.accent}`} />
                     <span className="min-w-0">
                     <span className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
-                      {group.title}
+                      {copy.groups[group.id as keyof typeof copy.groups]?.title ?? group.title}
                       {groupHasActive ? (
                         <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[11px] font-bold uppercase text-teal-800 dark:bg-teal-900/70 dark:text-teal-100">
-                          Aktiv
+                          {copy.active}
                         </span>
                       ) : null}
                     </span>
-                    <span className="mt-0.5 block truncate text-xs text-slate-500 dark:text-slate-400">{group.description}</span>
+                    <span className="mt-0.5 block truncate text-xs text-slate-500 dark:text-slate-400">
+                      {copy.groups[group.id as keyof typeof copy.groups]?.description ?? group.description}
+                    </span>
                     </span>
                   </span>
                   <ChevronDown aria-hidden="true" className={`h-4 w-4 shrink-0 text-slate-500 transition ${expanded ? "rotate-180" : ""}`} />

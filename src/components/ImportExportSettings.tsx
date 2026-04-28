@@ -29,7 +29,7 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
     link.download = `${sanitizeFilename(settings.fileName || "qr-code")}-settings.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setStatus("JSON exportiert.");
+    setStatus("JSON exported.");
   };
 
   const importJson = (file: File) => {
@@ -37,11 +37,11 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result));
-        if (!isStoredSettings(parsed)) throw new Error("ungültig");
+        if (!isStoredSettings(parsed)) throw new Error("invalid");
         onImport(parsed);
-        setStatus("Einstellungen importiert.");
+        setStatus("Settings imported.");
       } catch {
-        setStatus("Die JSON-Datei passt nicht zu dieser App.");
+        setStatus("The JSON file is not compatible with this app.");
       }
     };
     reader.readAsText(file);
@@ -50,7 +50,7 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
   return (
     <section className="premium-card p-4">
       <div className="mb-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">Profi-Funktionen</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">Pro Features</p>
         <h2 className="mt-1 text-lg font-semibold tracking-normal text-slate-950 dark:text-white">Import & Export</h2>
       </div>
       <div className="grid gap-2">
@@ -60,7 +60,7 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
           className="premium-button inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
           <Download aria-hidden="true" className="h-4 w-4" />
-          JSON exportieren
+          Export JSON
         </button>
         <input
           ref={inputRef}
@@ -78,21 +78,21 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
           className="premium-button inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
           <Upload aria-hidden="true" className="h-4 w-4" />
-          JSON importieren
+          Import JSON
         </button>
         <button
           type="button"
           onClick={() => {
             void copyToClipboard(json).then((ok) => {
               setCopied(ok);
-              setStatus(ok ? "Einstellungen kopiert." : "Zwischenablage ist nicht verfügbar.");
+              setStatus(ok ? "Settings copied." : "Clipboard is not available.");
               setTimeout(() => setCopied(false), 1600);
             });
           }}
           className="premium-button inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-indigo-200 hover:bg-indigo-50/70 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
           {copied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Clipboard aria-hidden="true" className="h-4 w-4" />}
-          Einstellungen kopieren
+          Copy settings
         </button>
         {status ? <p className="rounded-md border border-slate-100 bg-white/70 px-3 py-2 text-sm text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-950/55 dark:text-slate-300">{status}</p> : null}
       </div>

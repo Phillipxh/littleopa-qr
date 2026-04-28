@@ -1,21 +1,21 @@
 # QR Code Generator
 
-Professionelle, lokal laufende Web-App zum Erstellen individueller QR-Codes für Links, Texte, Kontakte, WLAN, Events, Standorte, Social Media, Zahlungslinks und mehr.
+A professional, fully local web app for creating custom QR codes for links, text, contacts, Wi-Fi, events, locations, social profiles, payment links, and more.
 
 ## Features
 
-- React, TypeScript, Vite und Tailwind CSS
-- QR-Code-Rendering mit `qr-code-styling`
-- Inhaltstypen: URL, Text, E-Mail, Telefon, SMS, WhatsApp, WLAN, vCard, MeCard, Event, Geo, Social Media, App Store, PayPal, Bitcoin, Datei-Link und Mehrfach-Link
-- Live-Vorschau mit Größe, Margin, Error Correction, Farben, Verläufen, Modulformen und QR-Augen-Design
-- Logo-Upload für PNG, JPG und SVG mit Größen- und Abstandskontrolle
-- 12 Designvorlagen plus zufälliges Design
-- Qualitätsprüfung für Kontrast, Inhaltslänge, Logo-Größe und Error Correction
-- Downloads als PNG, SVG, JPEG, WebP und PDF
-- Lokaler Verlauf der letzten 5 QR-Codes
-- JSON-Export und JSON-Import der Einstellungen
-- QR-Inhalt und Einstellungen in die Zwischenablage kopieren
-- Light/Dark Mode
+- React, TypeScript, Vite, and Tailwind CSS
+- QR code rendering with `qr-code-styling`
+- Content types: URL, Text, Email, Phone, SMS, WhatsApp, Wi-Fi, vCard, MeCard, Event, Geo, Social Media, App Store, PayPal, Bitcoin, File Link, and Multi-Link
+- Live preview with size, margin, error correction, colors, gradients, module shapes, and finder-eye design
+- Logo upload for PNG, JPG, and SVG with size and margin control
+- 12 design templates plus random design generation
+- Quality checks for contrast, content length, logo size, and error correction
+- Downloads as PNG, SVG, JPEG, WebP, and PDF
+- Local history of the last 5 QR codes
+- JSON export and JSON import for settings
+- Copy QR content and settings to clipboard
+- Light/Dark mode
 
 ## Installation
 
@@ -23,13 +23,13 @@ Professionelle, lokal laufende Web-App zum Erstellen individueller QR-Codes für
 npm install
 ```
 
-## Entwicklung
+## Development
 
 ```bash
 npm run dev
 ```
 
-Die App läuft ohne Backend komplett im Browser.
+The app runs entirely in the browser without a backend.
 
 ## Build
 
@@ -37,7 +37,7 @@ Die App läuft ohne Backend komplett im Browser.
 npm run build
 ```
 
-## Verwendete Libraries
+## Libraries Used
 
 - `react`
 - `react-dom`
@@ -48,14 +48,14 @@ npm run build
 - `lucide-react`
 - `jspdf`
 
-## Statische vs. dynamische QR-Codes
+## Static vs Dynamic QR Codes
 
-Diese App erzeugt statische QR-Codes. Der codierte Inhalt steckt direkt im QR-Code und kann nach dem Druck nicht zentral geändert werden. Dynamische QR-Codes mit Tracking, Statistiken oder austauschbaren Ziel-URLs benötigen einen Server, eine Datenbank und eine Redirect-Infrastruktur. Diese Funktionen sind bewusst nicht enthalten.
+This app creates static QR codes. The encoded content is embedded directly in the QR code and cannot be changed centrally after printing. Dynamic QR codes with tracking, analytics, or replaceable target URLs require a server, a database, and redirect infrastructure. Those features are intentionally not included.
 
-## Hinweise
+## Notes
 
-- Es werden keine Nutzerkonten, kein Tracking und keine Datenbank verwendet.
-- Datei- und PDF-QR-Codes codieren nur vorhandene URLs. Es findet kein Datei-Upload statt.
-- Zahlungs-QR-Codes verarbeiten keine Zahlungen, sondern codieren nur Zahlungslinks oder URIs.
-- Für Social-Media und Inhaltstypen werden neutrale, freie Icons verwendet; offizielle Markenlogos werden nicht als Design-Asset eingebettet.
-- Es werden keine Originalassets, Logos, Markeninhalte oder Texte von qrcode-monkey.com verwendet.
+- No user accounts, tracking, or database are used.
+- File/PDF QR codes encode existing URLs only. No file upload is performed.
+- Payment QR codes do not process payments; they only encode payment links or URIs.
+- For social media and content types, neutral free icons are used; official brand logos are not embedded as design assets.
+- No original assets, logos, brand content, or text from qrcode-monkey.com are used.

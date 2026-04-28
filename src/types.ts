@@ -18,6 +18,7 @@ export type QRContentType =
   | "multilink";
 
 export type QRExportFormat = "png" | "svg" | "jpeg" | "webp" | "pdf";
+export type AppLanguage = "de" | "en";
 export type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 export type GradientType = "linear" | "radial";
 export type QRModuleStyle = "square" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
@@ -33,7 +34,7 @@ export type SocialPlatform =
   | "github";
 
 export type WifiEncryption = "WPA" | "WEP" | "nopass";
-export type QualityLevel = "Sehr gut" | "Gut" | "Risiko" | "Kritisch";
+export type QualityLevel = "Excellent" | "Good" | "Risky" | "Critical";
 
 export interface LinkItem {
   id: string;
@@ -171,4 +172,5 @@ export interface StoredSettings {
   fileName: string;
   liveUpdate: boolean;
   darkMode: boolean;
+  language: AppLanguage;
 }

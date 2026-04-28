@@ -1,14 +1,17 @@
 import { SelectField, TextInput } from "./FormControls";
 import type { QRFormProps } from "./formTypes";
 
-export function SocialForm({ data, update }: QRFormProps) {
+export function SocialForm({ data, language, update }: QRFormProps) {
+  const isDe = language === "de";
   return (
     <div className="grid gap-4">
       <p className="rounded-md border border-slate-200 bg-white/72 px-3 py-2 text-xs leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-950/55 dark:text-slate-300">
-        Für diese App werden neutrale, freie UI-Icons verwendet. Es werden keine offiziellen Markenlogos im QR-Design eingebettet.
+        {isDe
+          ? "Für diese App werden neutrale, freie UI-Icons verwendet. Es werden keine offiziellen Markenlogos im QR-Design eingebettet."
+          : "This app uses neutral, free UI icons. Official brand logos are not embedded in the QR design."}
       </p>
       <SelectField
-        label="Plattform"
+        label={isDe ? "Plattform" : "Platform"}
         value={data.socialPlatform}
         onChange={(value) => update("socialPlatform", value)}
         options={[
@@ -22,10 +25,10 @@ export function SocialForm({ data, update }: QRFormProps) {
         ]}
       />
       <TextInput
-        label="Profilname oder URL"
+        label={isDe ? "Profilname oder URL" : "Profile Name or URL"}
         value={data.socialValue}
         onChange={(value) => update("socialValue", value)}
-        placeholder="@profil oder https://..."
+        placeholder={isDe ? "@profil oder https://..." : "@profile or https://..."}
       />
     </div>
   );

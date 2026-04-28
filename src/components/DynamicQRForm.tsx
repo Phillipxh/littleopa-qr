@@ -1,6 +1,6 @@
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import type { QRContentType, QRFormData, ValidationResult } from "../types";
-import { contentTypes } from "../data/contentTypes";
+import { getContentTypes } from "../data/contentTypes";
+import type { AppLanguage, QRContentType, QRFormData, ValidationResult } from "../types";
 import { Section } from "./Section";
 import type { UpdateQRField } from "./forms/formTypes";
 import { AppStoreForm } from "./forms/AppStoreForm";
@@ -23,12 +23,13 @@ import { WifiForm } from "./forms/WifiForm";
 interface DynamicQRFormProps {
   type: QRContentType;
   data: QRFormData;
+  language: AppLanguage;
   validation: ValidationResult;
   update: UpdateQRField;
 }
 
-const renderForm = (type: QRContentType, data: QRFormData, update: UpdateQRField) => {
-  const props = { data, update };
+const renderForm = (type: QRContentType, data: QRFormData, language: AppLanguage, update: UpdateQRField) => {
+  const props = { data, language, update };
   switch (type) {
     case "url":
       return <UrlForm {...props} />;
@@ -68,17 +69,30 @@ const renderForm = (type: QRContentType, data: QRFormData, update: UpdateQRField
   }
 };
 
-export function DynamicQRForm({ type, data, validation, update }: DynamicQRFormProps) {
-  const meta = contentTypes.find((item) => item.id === type);
+export function DynamicQRForm({ type, data, language, validation, update }: DynamicQRFormProps) {
+  const meta = getContentTypes(language).find((item) => item.id === type);
+  const copy = language === "de"
+    ? {
+        eyebrow: "2. Inhalt eingeben",
+        titleFallback: "Inhalt konfigurieren",
+        titleSuffix: "konfigurieren",
+        ready: "Der Inhalt ist bereit für die Live-Vorschau.",
+      }
+    : {
+        eyebrow: "2. Enter content",
+        titleFallback: "Configure content",
+        titleSuffix: "Configure",
+        ready: "Content is ready for live preview.",
+      };
 
   return (
     <Section
-      eyebrow="2. Inhalt eingeben"
-      title={meta ? `${meta.label} konfigurieren` : "Inhalt konfigurieren"}
+      eyebrow={copy.eyebrow}
+      title={meta ? (language === "de" ? `${meta.label} ${copy.titleSuffix}` : `${copy.titleSuffix} ${meta.label}`) : copy.titleFallback}
       description={meta?.description}
     >
       <div className="grid gap-4">
-        {renderForm(type, data, update)}
+        {renderForm(type, data, language, update)}
         {validation.errors.length || validation.warnings.length ? (
           <div className="grid gap-2">
             {validation.errors.map((error) => (
@@ -103,7 +117,7 @@ export function DynamicQRForm({ type, data, validation, update }: DynamicQRFormP
         ) : (
           <p className="flex items-start gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm leading-6 text-emerald-900 dark:border-emerald-900/70 dark:bg-emerald-950/30 dark:text-emerald-100">
             <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
-            Der Inhalt ist bereit für die Live-Vorschau.
+            {copy.ready}
           </p>
         )}
       </div>

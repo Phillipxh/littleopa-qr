@@ -1,10 +1,11 @@
 import QRCodeStyling from "qr-code-styling";
 import { RefreshCw } from "lucide-react";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
-import type { QRDesignOptions, QRLogoOptions } from "../types";
+import type { AppLanguage, QRDesignOptions, QRLogoOptions } from "../types";
 import { createQRCodeOptions } from "../utils/qrOptions";
 
 interface QRPreviewProps {
+  language: AppLanguage;
   value: string;
   design: QRDesignOptions;
   logo: QRLogoOptions;
@@ -14,7 +15,8 @@ interface QRPreviewProps {
   qrCodeRef: MutableRefObject<QRCodeStyling | null>;
 }
 
-export function QRPreview({ value, design, logo, liveUpdate, onLiveUpdateChange, onRefresh, qrCodeRef }: QRPreviewProps) {
+export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpdateChange, onRefresh, qrCodeRef }: QRPreviewProps) {
+  const isDe = language === "de";
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [renderError, setRenderError] = useState("");
   const options = useMemo(() => createQRCodeOptions(value, design, logo), [value, design, logo]);
@@ -30,7 +32,7 @@ export function QRPreview({ value, design, logo, liveUpdate, onLiveUpdateChange,
     } catch {
       containerRef.current.innerHTML = "";
       qrCodeRef.current = null;
-      setRenderError("Der QR-Code ist für diese Datenmenge nicht renderbar. Bitte Inhalt kürzen.");
+      setRenderError(isDe ? "Der QR-Code ist für diese Datenmenge nicht renderbar. Bitte Inhalt kürzen." : "The QR code cannot be rendered for this data size. Please shorten the content.");
     }
   }, [options, qrCodeRef]);
 
@@ -38,8 +40,8 @@ export function QRPreview({ value, design, logo, liveUpdate, onLiveUpdateChange,
     <section className="premium-card sticky top-4 p-4">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">Live-Vorschau</p>
-          <h2 className="mt-1 text-lg font-semibold tracking-normal text-slate-950 dark:text-white">Finaler QR-Code</h2>
+          <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">{isDe ? "Live-Vorschau" : "Live Preview"}</p>
+          <h2 className="mt-1 text-lg font-semibold tracking-normal text-slate-950 dark:text-white">{isDe ? "Finaler QR-Code" : "Final QR Code"}</h2>
         </div>
         <label className="premium-button flex items-center gap-2 rounded-md border border-slate-200 bg-white/70 px-2.5 py-2 text-sm font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-950/45 dark:text-slate-300">
           <input
@@ -57,7 +59,7 @@ export function QRPreview({ value, design, logo, liveUpdate, onLiveUpdateChange,
         }`}
         style={{ backgroundColor: design.transparentBackground ? undefined : design.backgroundColor }}
       >
-        <div ref={containerRef} className="qr-preview w-full" aria-label="QR-Code Vorschau" />
+        <div ref={containerRef} className="qr-preview w-full" aria-label={isDe ? "QR-Code Vorschau" : "QR code preview"} />
       </div>
       <div className="mt-4 grid gap-3">
         {renderError ? (
@@ -72,15 +74,15 @@ export function QRPreview({ value, design, logo, liveUpdate, onLiveUpdateChange,
             className="premium-button premium-primary inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-3 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:text-slate-950"
           >
             <RefreshCw aria-hidden="true" className="h-4 w-4" />
-            Vorschau aktualisieren
+            {isDe ? "Vorschau aktualisieren" : "Refresh Preview"}
           </button>
         ) : null}
         <div className="grid grid-cols-2 gap-2 text-sm">
           <p className="rounded-md border border-slate-100 bg-white/72 px-3 py-2 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/55 dark:text-slate-300">
-            Exportgröße <strong className="block text-slate-950 dark:text-white">{design.size} x {design.size} px</strong>
+            {isDe ? "Exportgröße" : "Export Size"} <strong className="block text-slate-950 dark:text-white">{design.size} x {design.size} px</strong>
           </p>
           <p className="rounded-md border border-slate-100 bg-white/72 px-3 py-2 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/55 dark:text-slate-300">
-            Inhalt <strong className="block text-slate-950 dark:text-white">{value.length} Zeichen</strong>
+            {isDe ? "Inhalt" : "Content"} <strong className="block text-slate-950 dark:text-white">{value.length} {isDe ? "Zeichen" : "characters"}</strong>
           </p>
         </div>
       </div>
