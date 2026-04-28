@@ -50,7 +50,7 @@ export function Header({ darkMode, language, onToggleDarkMode, onLanguageChange,
           <select
             value={language}
             onChange={(event) => onLanguageChange(event.target.value as AppLanguage)}
-            className="rounded border border-slate-200 bg-white px-2 py-1 text-sm text-slate-700 outline-none focus:border-teal-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            className="rounded border border-slate-200 bg-white px-2 py-1 text-sm text-slate-700 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
             aria-label={t.languageLabel}
           >
             <option value="de">🇩🇪 Deutsch</option>
@@ -60,7 +60,7 @@ export function Header({ darkMode, language, onToggleDarkMode, onLanguageChange,
       </div>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-3">
-          <div className="shimmer flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-slate-950 via-blue-950 to-teal-700 text-white shadow-lg shadow-teal-950/20 dark:from-white dark:via-cyan-100 dark:to-teal-200 dark:text-slate-950">
+          <div className="shimmer floating-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-950 via-indigo-700 to-cyan-500 text-white shadow-lg shadow-blue-950/30 dark:from-white dark:via-sky-100 dark:to-blue-200 dark:text-slate-950">
             <Wand2 aria-hidden="true" className="h-6 w-6" />
           </div>
           <div>
@@ -74,7 +74,7 @@ export function Header({ darkMode, language, onToggleDarkMode, onLanguageChange,
           <button
             type="button"
             onClick={onLoadExample}
-            className="premium-button inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white/90 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-teal-800 dark:hover:bg-teal-950/30"
+            className="premium-button inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white/90 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-blue-800 dark:hover:bg-blue-950/30"
           >
             <Wand2 aria-hidden="true" className="h-4 w-4" />
             {t.loadExample}
@@ -100,7 +100,7 @@ export function Header({ darkMode, language, onToggleDarkMode, onLanguageChange,
             onClick={onToggleDarkMode}
             aria-label={darkMode ? t.lightAria : t.darkAria}
             title={darkMode ? t.lightMode : t.darkMode}
-            className="premium-button inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white/90 text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-teal-800 dark:hover:bg-teal-950/30"
+            className="premium-button inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white/90 text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-blue-800 dark:hover:bg-blue-950/30"
           >
             {darkMode ? <Sun aria-hidden="true" className="h-4 w-4" /> : <Moon aria-hidden="true" className="h-4 w-4" />}
           </button>

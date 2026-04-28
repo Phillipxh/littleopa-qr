@@ -137,7 +137,7 @@ export function DownloadButtons({
         : "border-red-200 bg-red-50 text-red-900 dark:border-red-900/70 dark:bg-red-950/45 dark:text-red-100";
   const qualityShellTone =
     quality.level === "Excellent" || quality.level === "Good"
-      ? "border-emerald-200/90 bg-gradient-to-br from-emerald-50/95 via-white/90 to-teal-50/80 dark:border-emerald-900/60 dark:from-emerald-950/30 dark:via-slate-900/88 dark:to-teal-950/22"
+      ? "border-emerald-200/90 bg-gradient-to-br from-emerald-50/95 via-white/90 to-blue-50/80 dark:border-emerald-900/60 dark:from-emerald-950/30 dark:via-slate-900/88 dark:to-blue-950/22"
       : quality.level === "Risky"
         ? "border-amber-200/90 bg-gradient-to-br from-amber-50/95 via-white/90 to-orange-50/80 dark:border-amber-900/60 dark:from-amber-950/30 dark:via-slate-900/88 dark:to-orange-950/22"
         : "border-rose-200/90 bg-gradient-to-br from-rose-50/95 via-white/90 to-amber-50/80 dark:border-rose-900/60 dark:from-rose-950/30 dark:via-slate-900/88 dark:to-amber-950/22";
@@ -163,7 +163,7 @@ export function DownloadButtons({
                     ?
                   </button>
                   <span className="pointer-events-none absolute bottom-[calc(100%+0.6rem)] right-0 z-[70] w-[320px] rounded-lg border border-slate-200 bg-white p-3 text-left text-sm leading-5 text-slate-700 opacity-0 shadow-2xl shadow-slate-950/15 transition group-hover:opacity-100 group-focus-within:opacity-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
-                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300">{isDe ? "Hinweise" : "Hints"}</span>
+                    <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Hinweise" : "Hints"}</span>
                     {tooltipItems.length ? (
                       tooltipItems.slice(0, 5).map((item) => (
                         <span key={item} className="mt-1 block">
@@ -183,12 +183,12 @@ export function DownloadButtons({
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col justify-center rounded-lg border border-teal-200/90 bg-gradient-to-br from-teal-50/95 via-white/90 to-sky-50/90 p-2 shadow-panel dark:border-teal-900/60 dark:from-teal-950/32 dark:via-slate-900/88 dark:to-sky-950/28">
+        <div className="flex min-w-0 flex-1 flex-col justify-center rounded-lg border border-blue-200/90 bg-gradient-to-br from-blue-50/95 via-white/90 to-sky-50/90 p-2 shadow-panel dark:border-blue-900/60 dark:from-blue-950/32 dark:via-slate-900/88 dark:to-sky-950/28">
           <div className="grid gap-2 sm:grid-cols-[minmax(160px,240px)_minmax(0,1fr)] xl:grid-cols-[minmax(160px,240px)_minmax(0,1fr)_auto] xl:items-center">
             <label className="grid gap-1 xl:gap-0">
               <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{isDe ? "Dateiname" : "Filename"}</span>
               <input
-                className="h-9 w-full rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/20 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-100"
+                className="h-9 w-full rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-100"
                 value={fileName}
                 onChange={(event) => onFileNameChange(event.target.value)}
                 placeholder="qr-code"
@@ -203,7 +203,7 @@ export function DownloadButtons({
                   title={isDe ? labelDe : labelEn}
                   disabled={disabled}
                   onClick={() => void runDownload(format)}
-                  className="premium-button premium-primary shimmer inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-3 text-[13px] font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-950 xl:whitespace-nowrap"
+                  className="premium-button premium-primary shimmer inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-3 text-[13px] font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-950 xl:whitespace-nowrap"
                 >
                   <Icon aria-hidden="true" className="h-4 w-4" />
                   {shortLabel}
@@ -212,7 +212,7 @@ export function DownloadButtons({
               <button
                 type="button"
                 onClick={() => setShowAll((current) => !current)}
-                className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200 dark:hover:border-teal-800 dark:hover:bg-teal-950/30 xl:whitespace-nowrap"
+                className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200 dark:hover:border-blue-800 dark:hover:bg-blue-950/30 xl:whitespace-nowrap"
               >
                 <Download aria-hidden="true" className="h-4 w-4" />
                 {showAll ? (isDe ? "Weniger" : "Less") : isDe ? "Formate" : "Formats"}
@@ -226,7 +226,7 @@ export function DownloadButtons({
                   setTimeout(() => setCopied(false), 1600);
                 });
               }}
-              className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200 dark:hover:border-teal-800 dark:hover:bg-teal-950/30 xl:whitespace-nowrap"
+              className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200 dark:hover:border-blue-800 dark:hover:bg-blue-950/30 xl:whitespace-nowrap"
             >
               {copied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Copy aria-hidden="true" className="h-4 w-4" />}
               {isDe ? "Inhalt kopieren" : "Copy content"}
@@ -237,7 +237,7 @@ export function DownloadButtons({
 
         <div className="flex min-w-[260px] flex-col justify-center rounded-lg border border-indigo-200/90 bg-gradient-to-br from-indigo-50/90 via-white/90 to-amber-50/75 p-2 shadow-panel dark:border-indigo-900/60 dark:from-indigo-950/35 dark:via-slate-900/88 dark:to-amber-950/22 lg:w-[320px]">
           <div className="mb-1.5 flex items-center justify-between gap-3">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300 lg:hidden">{isDe ? "Verlauf & Einstellungen" : "History & Settings"}</p>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300 lg:hidden">{isDe ? "Verlauf & Einstellungen" : "History & Settings"}</p>
             {history.length ? (
               <button
                 type="button"
@@ -257,7 +257,7 @@ export function DownloadButtons({
                     key={item.id}
                     type="button"
                     onClick={() => onLoadHistory(item)}
-                    className="premium-button rounded-md border border-slate-100 bg-white/72 px-2.5 py-2 text-left text-sm shadow-sm hover:border-teal-200 hover:bg-teal-50/60 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-800 dark:bg-slate-950/45"
+                    className="premium-button rounded-md border border-slate-100 bg-white/72 px-2.5 py-2 text-left text-sm shadow-sm hover:border-blue-200 hover:bg-blue-50/60 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-950/45"
                   >
                     <span className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-100">
                       <Clock3 aria-hidden="true" className="h-3.5 w-3.5 text-slate-500" />
@@ -276,7 +276,7 @@ export function DownloadButtons({
             <button
               type="button"
               onClick={exportJson}
-              className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-2.5 text-[13px] font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200"
+              className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-2.5 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200"
             >
               <Download aria-hidden="true" className="h-4 w-4" />
               JSON

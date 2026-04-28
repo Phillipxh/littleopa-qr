@@ -40,7 +40,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
     <section className="premium-card sticky top-4 p-4">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">{isDe ? "Live-Vorschau" : "Live Preview"}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Live-Vorschau" : "Live Preview"}</p>
           <h2 className="mt-1 text-lg font-semibold tracking-normal text-slate-950 dark:text-white">{isDe ? "Finaler QR-Code" : "Final QR Code"}</h2>
         </div>
         <label className="premium-button flex items-center gap-2 rounded-md border border-slate-200 bg-white/70 px-2.5 py-2 text-sm font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-950/45 dark:text-slate-300">
@@ -48,7 +48,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
             type="checkbox"
             checked={liveUpdate}
             onChange={(event) => onLiveUpdateChange(event.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+            className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
           />
           Live
         </label>
@@ -71,7 +71,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
           <button
             type="button"
             onClick={onRefresh}
-            className="premium-button premium-primary inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-3 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:text-slate-950"
+            className="premium-button premium-primary inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-3 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-950"
           >
             <RefreshCw aria-hidden="true" className="h-4 w-4" />
             {isDe ? "Vorschau aktualisieren" : "Refresh Preview"}

@@ -22,8 +22,8 @@ export type AppLanguage = "de" | "en";
 export type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 export type GradientType = "linear" | "radial";
 export type QRModuleStyle = "square" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
-export type QREyeOuterStyle = "square" | "dot" | "extra-rounded" | "rounded";
-export type QREyeInnerStyle = "square" | "dot" | "rounded";
+export type QREyeOuterStyle = "square" | "dot" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
+export type QREyeInnerStyle = "square" | "dot" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
 export type SocialPlatform =
   | "instagram"
   | "facebook"

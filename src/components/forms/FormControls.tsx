@@ -18,10 +18,10 @@ export function Field({ label, htmlFor, hint, children }: FieldProps) {
 }
 
 export const inputClass =
-  "w-full rounded-md border border-slate-200 bg-white/92 px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/20 dark:border-slate-700 dark:bg-slate-950/72 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:border-teal-500";
+  "w-full rounded-md border border-slate-200 bg-white/92 px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950/72 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:border-blue-500";
 
 export const selectClass =
-  "w-full rounded-md border border-slate-200 bg-white/92 px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition hover:border-slate-300 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/20 dark:border-slate-700 dark:bg-slate-950/72 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-teal-500";
+  "w-full rounded-md border border-slate-200 bg-white/92 px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950/72 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-blue-500";
 
 interface TextInputProps {
   label: string;
@@ -82,12 +82,12 @@ interface SwitchFieldProps {
 
 export function SwitchField({ label, checked, onChange, hint }: SwitchFieldProps) {
   return (
-    <label className="premium-button flex items-start gap-3 rounded-md border border-slate-200 bg-white/72 p-3 shadow-sm hover:border-teal-200 hover:bg-teal-50/50 dark:border-slate-800 dark:bg-slate-950/55 dark:hover:border-teal-900/80 dark:hover:bg-teal-950/20">
+    <label className="premium-button flex items-start gap-3 rounded-md border border-slate-200 bg-white/72 p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50/50 dark:border-slate-800 dark:bg-slate-950/55 dark:hover:border-blue-900/80 dark:hover:bg-blue-950/20">
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 dark:border-slate-600"
+        className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600"
       />
       <span>
         <span className="block text-sm font-semibold text-slate-800 dark:text-slate-100">{label}</span>
@@ -136,7 +136,7 @@ export function RangeField({ label, value, min, max, step = 1, unit = "", onChan
     <div>
       <div className="mb-1.5 flex items-center justify-between gap-3">
         <span className="text-sm font-medium text-slate-800 dark:text-slate-100">{label}</span>
-        <span className="rounded-md bg-teal-50 px-2 py-1 text-xs font-bold text-teal-800 ring-1 ring-teal-100 dark:bg-teal-950/45 dark:text-teal-100 dark:ring-teal-900/80">
+        <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-bold text-blue-800 ring-1 ring-blue-100 dark:bg-blue-950/45 dark:text-blue-100 dark:ring-blue-900/80">
           {value}
           {unit}
         </span>
@@ -148,7 +148,7 @@ export function RangeField({ label, value, min, max, step = 1, unit = "", onChan
         max={max}
         step={step}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full accent-teal-600"
+        className="w-full accent-blue-600"
       />
       {hint ? <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{hint}</p> : null}
     </div>

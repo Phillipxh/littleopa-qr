@@ -24,7 +24,7 @@ const groups: ContentTypeGroup[] = [
     title: "Links & Text",
     description: "Quick codes for websites, files, and multiple links.",
     items: ["url", "text", "file", "multilink"],
-    accent: "from-teal-600 to-cyan-600",
+    accent: "from-blue-600 to-cyan-600",
   },
   {
     id: "communication",
@@ -38,7 +38,7 @@ const groups: ContentTypeGroup[] = [
     title: "Access & Contact",
     description: "Wi-Fi, contact cards, and location data.",
     items: ["wifi", "vcard", "mecard", "geo"],
-    accent: "from-emerald-600 to-teal-700",
+    accent: "from-sky-600 to-blue-700",
   },
   {
     id: "business",
@@ -90,13 +90,13 @@ export function ContentTypeSelector({ language, value, onChange }: ContentTypeSe
   return (
     <Section eyebrow={copy.eyebrow} title={copy.title}>
       <div className="grid gap-3">
-        <div className="shimmer flex items-start gap-3 rounded-lg border border-teal-200 bg-gradient-to-br from-teal-50 via-white to-blue-50 p-3 text-teal-950 shadow-sm dark:border-teal-800 dark:from-teal-950/40 dark:via-slate-900 dark:to-indigo-950/30 dark:text-teal-50">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-teal-600 to-blue-700 text-white shadow-lg shadow-teal-900/20">
+        <div className="shimmer flex items-start gap-3 rounded-lg border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-3 text-blue-950 shadow-sm dark:border-blue-800 dark:from-blue-950/40 dark:via-slate-900 dark:to-indigo-950/30 dark:text-blue-50">
+          <span className="floating-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-900/20">
             <SelectedIcon aria-hidden="true" className="h-5 w-5" />
           </span>
           <span className="min-w-0">
             <span className="block text-sm font-semibold">{selectedType.label}</span>
-            <span className="mt-1 block text-sm leading-6 text-teal-900/75 dark:text-teal-100/75">{selectedType.description}</span>
+            <span className="mt-1 block text-sm leading-6 text-blue-900/75 dark:text-blue-100/75">{selectedType.description}</span>
           </span>
         </div>
         <div className="grid gap-2">
@@ -109,14 +109,14 @@ export function ContentTypeSelector({ language, value, onChange }: ContentTypeSe
                 key={group.id}
                 className={`overflow-hidden rounded-lg border transition ${
                   groupHasActive
-                    ? "border-teal-300 bg-white/94 shadow-sm dark:border-teal-800 dark:bg-slate-900/86"
+                    ? "border-blue-300 bg-white/94 shadow-sm dark:border-blue-800 dark:bg-slate-900/86"
                     : "border-slate-200 bg-white/72 dark:border-slate-800 dark:bg-slate-900/70"
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => setOpenGroupId(expanded ? "" : group.id)}
-                  className="flex min-h-14 w-full items-center justify-between gap-3 px-3 text-left transition hover:bg-white/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal-500 dark:hover:bg-slate-800/80"
+                  className="flex min-h-14 w-full items-center justify-between gap-3 px-3 text-left transition hover:bg-white/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:hover:bg-slate-800/80"
                   aria-expanded={expanded}
                 >
                   <span className="flex min-w-0 items-center gap-3">
@@ -125,7 +125,7 @@ export function ContentTypeSelector({ language, value, onChange }: ContentTypeSe
                     <span className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
                       {copy.groups[group.id as keyof typeof copy.groups]?.title ?? group.title}
                       {groupHasActive ? (
-                        <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[11px] font-bold uppercase text-teal-800 dark:bg-teal-900/70 dark:text-teal-100">
+                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-bold uppercase text-blue-800 dark:bg-blue-900/70 dark:text-blue-100">
                           {copy.active}
                         </span>
                       ) : null}
@@ -150,10 +150,10 @@ export function ContentTypeSelector({ language, value, onChange }: ContentTypeSe
                           key={type.id}
                           type="button"
                           onClick={() => onChange(type.id)}
-                          className={`type-card group flex min-h-[74px] items-start gap-3 rounded-md border p-3 text-left focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                          className={`type-card group flex min-h-[74px] items-start gap-3 rounded-md border p-3 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                             active
-                              ? "border-teal-500 bg-gradient-to-br from-teal-50 to-cyan-50 text-teal-950 shadow-sm dark:border-teal-400 dark:from-teal-950/55 dark:to-blue-950/35 dark:text-teal-50"
-                              : "border-slate-200 bg-white/92 text-slate-700 hover:border-teal-200 hover:bg-white dark:border-slate-800 dark:bg-slate-900/86 dark:text-slate-200 dark:hover:border-teal-800"
+                              ? "border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-950 shadow-sm dark:border-blue-400 dark:from-blue-950/55 dark:to-cyan-950/35 dark:text-blue-50"
+                              : "border-slate-200 bg-white/92 text-slate-700 hover:border-blue-200 hover:bg-white dark:border-slate-800 dark:bg-slate-900/86 dark:text-slate-200 dark:hover:border-blue-800"
                           }`}
                           aria-pressed={active}
                         >
@@ -161,7 +161,7 @@ export function ContentTypeSelector({ language, value, onChange }: ContentTypeSe
                             className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition ${
                               active
                                 ? `bg-gradient-to-br ${group.accent} text-white shadow-sm`
-                                : "bg-slate-100 text-slate-600 group-hover:bg-teal-50 group-hover:text-teal-700 dark:bg-slate-800 dark:text-slate-300 dark:group-hover:bg-teal-950"
+                                : "bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-blue-700 dark:bg-slate-800 dark:text-slate-300 dark:group-hover:bg-blue-950"
                             }`}
                           >
                             <Icon aria-hidden="true" className="h-4 w-4" />
