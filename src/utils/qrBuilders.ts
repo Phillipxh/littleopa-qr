@@ -147,7 +147,7 @@ export const generateCalendarEvent = (data: QRFormData): string =>
     .filter(Boolean)
     .join("\r\n");
 
-const buildSocialUrl = (data: QRFormData): string => {
+export const buildSocialUrl = (data: QRFormData): string => {
   const value = data.socialValue.trim();
   if (/^https?:\/\//i.test(value)) return value;
   const handle = value.replace(/^@/, "");

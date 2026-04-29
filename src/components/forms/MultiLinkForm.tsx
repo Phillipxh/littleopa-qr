@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { HiOutlinePlus, HiOutlineTrash } from "react-icons/hi2";
 import { SwitchField, TextInput, inputClass } from "./FormControls";
 import type { QRFormProps } from "./formTypes";
 
@@ -56,7 +56,7 @@ export function MultiLinkForm({ data, language, update }: QRFormProps) {
               title={isDe ? "Link entfernen" : "Remove link"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
             >
-              <Trash2 aria-hidden="true" className="h-4 w-4" />
+              <HiOutlineTrash aria-hidden="true" className="h-4 w-4" />
             </button>
           </div>
         ))}
@@ -66,7 +66,7 @@ export function MultiLinkForm({ data, language, update }: QRFormProps) {
         onClick={addLink}
         className="inline-flex min-h-10 w-fit items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
       >
-        <Plus aria-hidden="true" className="h-4 w-4" />
+        <HiOutlinePlus aria-hidden="true" className="h-4 w-4" />
         {isDe ? "Link hinzufügen" : "Add link"}
       </button>
     </div>

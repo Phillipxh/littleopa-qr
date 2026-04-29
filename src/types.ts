@@ -21,9 +21,64 @@ export type QRExportFormat = "png" | "svg" | "jpeg" | "webp" | "pdf";
 export type AppLanguage = "de" | "en";
 export type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 export type GradientType = "linear" | "radial";
-export type QRModuleStyle = "square" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
-export type QREyeOuterStyle = "square" | "dot" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
-export type QREyeInnerStyle = "square" | "dot" | "dots" | "rounded" | "classy" | "classy-rounded" | "extra-rounded";
+export type QRModuleStyle =
+  | "square"
+  | "mosaic"
+  | "dots"
+  | "micro-dots"
+  | "nano-dots"
+  | "horizontal-bars"
+  | "vertical-bars"
+  | "rounded"
+  | "soft-rounded"
+  | "extra-rounded"
+  | "classy"
+  | "classy-rounded"
+  | "bevel"
+  | "cut-corners"
+  | "diamond"
+  | "capsule"
+  | "leaf"
+  | "spark"
+  | "cross"
+  | "pixel-dots"
+  | "diagonal"
+  | "orbit";
+export type QREyeOuterStyle =
+  | "square"
+  | "dot"
+  | "dots"
+  | "rounded"
+  | "classy"
+  | "classy-rounded"
+  | "extra-rounded"
+  | "frame-soft"
+  | "frame-thin"
+  | "octagon"
+  | "bevel"
+  | "notch"
+  | "bracket"
+  | "pill"
+  | "rough";
+export type QREyeInnerStyle =
+  | "square"
+  | "dot"
+  | "dots"
+  | "rounded"
+  | "classy"
+  | "classy-rounded"
+  | "extra-rounded"
+  | "soft-square"
+  | "tiny-square"
+  | "octagon"
+  | "diamond"
+  | "vertical-pills"
+  | "horizontal-pills"
+  | "flower"
+  | "circle-grid"
+  | "slash"
+  | "inset"
+  | "burst";
 export type SocialPlatform =
   | "instagram"
   | "facebook"
@@ -32,6 +87,7 @@ export type SocialPlatform =
   | "youtube"
   | "x"
   | "github";
+export type QRLogoBorderStyle = "solid" | "dashed" | "dotted";
 
 export type WifiEncryption = "WPA" | "WEP" | "nopass";
 export type QualityLevel = "Excellent" | "Good" | "Risky" | "Critical";
@@ -127,6 +183,13 @@ export interface QRLogoOptions {
   image: string | null;
   name: string;
   useTypeIcon: boolean;
+  iconColor: string;
+  iconBackgroundColor: string;
+  iconBorderColor: string;
+  iconBorderStyle: QRLogoBorderStyle;
+  iconBorderWidth: number;
+  iconRadius: number;
+  iconShadow: number;
   imageSize: number;
   margin: number;
   hideBackgroundDots: boolean;

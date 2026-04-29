@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { HiOutlineChevronDown } from "react-icons/hi2";
 import type { AppLanguage, QRDesignOptions, QREyeInnerStyle, QREyeOuterStyle, QRModuleStyle } from "../types";
+import { eyeInnerStyleOptions, eyeOuterStyleOptions, moduleStyleOptions, type QRStyleOption } from "../utils/shapeStyles";
 
 interface ShapeSelectorProps {
   language: AppLanguage;
@@ -6,122 +9,342 @@ interface ShapeSelectorProps {
   onChange: (design: QRDesignOptions) => void;
 }
 
-const moduleOptions: { value: QRModuleStyle; label: string; hint: string }[] = [
-  { value: "square", label: "Square", hint: "clean edges" },
-  { value: "dots", label: "Dots", hint: "soft and modern" },
-  { value: "rounded", label: "Rounded", hint: "smooth modules" },
-  { value: "classy", label: "Classy", hint: "technical look" },
-  { value: "classy-rounded", label: "Classy Rounded", hint: "sharp + soft" },
-  { value: "extra-rounded", label: "Extra Rounded", hint: "very organic" },
-];
-
-const outerOptions: { value: QREyeOuterStyle; label: string; hint: string }[] = [
-  { value: "square", label: "Square", hint: "maximum robustness" },
-  { value: "dot", label: "Dot", hint: "compact" },
-  { value: "dots", label: "Micro Dots", hint: "organic dots" },
-  { value: "rounded", label: "Rounded", hint: "friendly" },
-  { value: "classy", label: "Classy", hint: "premium contour" },
-  { value: "classy-rounded", label: "Classy Rounded", hint: "flowing premium" },
-  { value: "extra-rounded", label: "Extra Rounded", hint: "premium" },
-];
-
-const innerOptions: { value: QREyeInnerStyle; label: string; hint: string }[] = [
-  { value: "square", label: "Square", hint: "precise" },
-  { value: "dot", label: "Dot", hint: "soft" },
-  { value: "dots", label: "Micro Dots", hint: "lightweight" },
-  { value: "rounded", label: "Rounded", hint: "balanced" },
-  { value: "classy", label: "Classy", hint: "edge focus" },
-  { value: "classy-rounded", label: "Classy Rounded", hint: "smooth contrast" },
-  { value: "extra-rounded", label: "Extra Rounded", hint: "organic" },
-];
-
-interface ShapePreset {
-  id: string;
-  labelEn: string;
-  labelDe: string;
-  hintEn: string;
-  hintDe: string;
-  module: QRModuleStyle;
-  outer: QREyeOuterStyle;
-  inner: QREyeInnerStyle;
+interface Bounds {
+  x: number;
+  y: number;
+  size: number;
 }
 
-const shapePresets: ShapePreset[] = [
-  { id: "bold-square", labelEn: "Bold Square", labelDe: "Bold Quadrat", hintEn: "high scan stability", hintDe: "hohe Scan-Stabilität", module: "square", outer: "square", inner: "square" },
-  { id: "dot-soft", labelEn: "Dot Soft", labelDe: "Dot Soft", hintEn: "soft modern look", hintDe: "weicher moderner Look", module: "dots", outer: "dot", inner: "dot" },
-  { id: "flow-rounded", labelEn: "Flow Rounded", labelDe: "Flow Rund", hintEn: "balanced daily use", hintDe: "ausbalanciert für Alltag", module: "rounded", outer: "rounded", inner: "dot" },
-  { id: "classy-pro", labelEn: "Classy Pro", labelDe: "Classy Pro", hintEn: "tech premium style", hintDe: "technisch-premium Stil", module: "classy", outer: "classy", inner: "square" },
-  { id: "classy-soft", labelEn: "Classy Soft", labelDe: "Classy Soft", hintEn: "sharp + rounded", hintDe: "markant + rund", module: "classy-rounded", outer: "classy-rounded", inner: "rounded" },
-  { id: "organic-plus", labelEn: "Organic Plus", labelDe: "Organic Plus", hintEn: "organic and friendly", hintDe: "organisch und freundlich", module: "extra-rounded", outer: "extra-rounded", inner: "dot" },
-  { id: "micro-corners", labelEn: "Micro Corners", labelDe: "Mikro-Ecken", hintEn: "small eye emphasis", hintDe: "fokussierte kleine Augen", module: "rounded", outer: "dots", inner: "dots" },
-  { id: "matrix", labelEn: "Matrix", labelDe: "Matrix", hintEn: "strong square matrix", hintDe: "starke Matrix-Optik", module: "square", outer: "classy", inner: "dot" },
-  { id: "neo-balance", labelEn: "Neo Balance", labelDe: "Neo Balance", hintEn: "modern balanced style", hintDe: "modern ausbalanciert", module: "classy-rounded", outer: "rounded", inner: "classy-rounded" },
-  { id: "precision", labelEn: "Precision", labelDe: "Präzision", hintEn: "clean enterprise look", hintDe: "klarer Enterprise-Look", module: "square", outer: "rounded", inner: "square" },
-  { id: "punch-dot", labelEn: "Punch Dot", labelDe: "Punch Dot", hintEn: "bold center points", hintDe: "kräftige Innenpunkte", module: "classy", outer: "square", inner: "dot" },
-  { id: "aero", labelEn: "Aero", labelDe: "Aero", hintEn: "light and dynamic", hintDe: "leicht und dynamisch", module: "dots", outer: "classy-rounded", inner: "extra-rounded" },
-];
+type ShapeSectionId = "module" | "outer" | "inner";
 
 const moduleCells = [
-  [4, 4],
-  [18, 4],
-  [32, 4],
-  [60, 4],
-  [4, 18],
-  [18, 18],
-  [46, 18],
-  [60, 18],
-  [74, 18],
-  [18, 32],
-  [32, 32],
-  [46, 32],
-  [74, 32],
+  [5, 5],
+  [17, 5],
+  [29, 5],
+  [53, 5],
+  [5, 17],
+  [17, 17],
+  [41, 17],
+  [53, 17],
+  [65, 17],
+  [17, 29],
+  [29, 29],
+  [41, 29],
+  [65, 29],
+  [5, 41],
+  [29, 41],
 ] as const;
 
-function ModulePreview({ type }: { type: QRModuleStyle }) {
-  const draw = (x: number, y: number, index: number) => {
-    if (type === "dots") return <circle key={`${x}-${y}`} cx={x + 5} cy={y + 5} r="5" />;
-    if (type === "extra-rounded") return <rect key={`${x}-${y}`} x={x} y={y} width="12" height="10" rx="5" />;
-    if (type === "rounded" || type === "classy-rounded") return <rect key={`${x}-${y}`} x={x} y={y} width="10" height="10" rx={type === "rounded" ? 3 : 4.5} />;
-    if (type === "classy") {
-      const rounded = index % 2 === 0;
-      return <rect key={`${x}-${y}`} x={x} y={y} width="10" height="10" rx={rounded ? 3 : 0.5} transform={rounded ? undefined : `rotate(0 ${x + 5} ${y + 5})`} />;
-    }
-    return <rect key={`${x}-${y}`} x={x} y={y} width="10" height="10" rx="0.5" />;
-  };
+const roundedRectPath = ({ x, y, size }: Bounds, radius: number) => {
+  const r = Math.min(radius, size / 2);
+  const right = x + size;
+  const bottom = y + size;
+  return `M ${x + r} ${y} H ${right - r} Q ${right} ${y} ${right} ${y + r} V ${bottom - r} Q ${right} ${bottom} ${right - r} ${bottom} H ${x + r} Q ${x} ${bottom} ${x} ${bottom - r} V ${y + r} Q ${x} ${y} ${x + r} ${y} Z`;
+};
 
+const octagonPath = ({ x, y, size }: Bounds, cut: number) => {
+  const c = Math.min(cut, size / 2);
+  const right = x + size;
+  const bottom = y + size;
+  return `M ${x + c} ${y} H ${right - c} L ${right} ${y + c} V ${bottom - c} L ${right - c} ${bottom} H ${x + c} L ${x} ${bottom - c} V ${y + c} Z`;
+};
+
+const diamondPath = ({ x, y, size }: Bounds) => {
+  const cx = x + size / 2;
+  const cy = y + size / 2;
+  return `M ${cx} ${y} L ${x + size} ${cy} L ${cx} ${y + size} L ${x} ${cy} Z`;
+};
+
+const circlePath = ({ x, y, size }: Bounds) => {
+  const r = size / 2;
+  return `M ${x + r} ${y} a ${r} ${r} 0 1 0 0.1 0 Z`;
+};
+
+const inset = ({ x, y, size }: Bounds, scale: number): Bounds => {
+  const nextSize = size * scale;
+  return { x: x + (size - nextSize) / 2, y: y + (size - nextSize) / 2, size: nextSize };
+};
+
+const plusPath = ({ x, y, size }: Bounds, thickness = 0.34) => {
+  const bar = size * thickness;
+  const left = x + (size - bar) / 2;
+  const right = left + bar;
+  const top = y + (size - bar) / 2;
+  const bottom = top + bar;
+  return `M ${left} ${y} H ${right} V ${top} H ${x + size} V ${bottom} H ${right} V ${y + size} H ${left} V ${bottom} H ${x} V ${top} H ${left} Z`;
+};
+
+const starPath = ({ x, y, size }: Bounds, innerScale = 0.42) => {
+  const cx = x + size / 2;
+  const cy = y + size / 2;
+  const outer = size / 2;
+  const inner = outer * innerScale;
+  const points = Array.from({ length: 8 }, (_, index) => {
+    const radius = index % 2 === 0 ? outer : inner;
+    const angle = -Math.PI / 2 + (Math.PI * 2 * index) / 8;
+    return `${cx + Math.cos(angle) * radius} ${cy + Math.sin(angle) * radius}`;
+  });
+  return `M ${points.join(" L ")} Z`;
+};
+
+const moduleShape = (style: QRModuleStyle, x: number, y: number, size: number, index: number, keyPrefix: string) => {
+  const b = { x, y, size };
+  const cx = x + size / 2;
+  const cy = y + size / 2;
+
+  switch (style) {
+    case "dots":
+      return <circle key={keyPrefix} cx={cx} cy={cy} r={size * 0.5} />;
+    case "micro-dots":
+      return <circle key={keyPrefix} cx={cx} cy={cy} r={size * 0.34} />;
+    case "nano-dots":
+      return <circle key={keyPrefix} cx={cx} cy={cy} r={size * 0.24} />;
+    case "rounded":
+      return <rect key={keyPrefix} x={x} y={y} width={size} height={size} rx={size * 0.24} />;
+    case "soft-rounded": {
+      const next = inset(b, 0.9);
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.size} height={next.size} rx={size * 0.2} />;
+    }
+    case "extra-rounded":
+      return <rect key={keyPrefix} x={x} y={y + size * 0.08} width={size} height={size * 0.84} rx={size * 0.42} />;
+    case "classy":
+      return index % 2 === 0 ? <path key={keyPrefix} d={octagonPath(b, size * 0.15)} /> : <rect key={keyPrefix} x={x} y={y} width={size} height={size} rx={size * 0.05} />;
+    case "classy-rounded":
+      return <path key={keyPrefix} d={roundedRectPath(inset(b, 0.96), index % 2 === 0 ? size * 0.28 : size * 0.08)} />;
+    case "mosaic": {
+      const next = inset(b, 0.92);
+      const cut = size * 0.23;
+      const right = next.x + next.size;
+      const bottom = next.y + next.size;
+      const d =
+        index % 3 === 0
+          ? `M ${next.x + cut} ${next.y} H ${right} V ${bottom - cut} L ${right - cut} ${bottom} H ${next.x} V ${next.y + cut} Z`
+          : `M ${next.x} ${next.y} H ${right - cut} L ${right} ${next.y + cut} V ${bottom} H ${next.x + cut} L ${next.x} ${bottom - cut} Z`;
+      return <path key={keyPrefix} d={d} />;
+    }
+    case "horizontal-bars": {
+      const next = { x: x + size * 0.03, y: y + size * 0.27, width: size * 0.94, height: size * 0.46 };
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.width} height={next.height} rx={size * 0.22} />;
+    }
+    case "vertical-bars": {
+      const next = { x: x + size * 0.27, y: y + size * 0.03, width: size * 0.46, height: size * 0.94 };
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.width} height={next.height} rx={size * 0.22} />;
+    }
+    case "bevel":
+      return <path key={keyPrefix} d={octagonPath(inset(b, 0.92), size * 0.16)} />;
+    case "cut-corners": {
+      const next = inset(b, 0.9);
+      const cut = size * 0.18;
+      const right = next.x + next.size;
+      const bottom = next.y + next.size;
+      return <path key={keyPrefix} d={`M ${next.x + cut} ${next.y} H ${right} V ${bottom} H ${next.x} V ${next.y + cut} Z`} />;
+    }
+    case "diamond":
+      return <path key={keyPrefix} d={diamondPath(inset(b, 0.86))} />;
+    case "capsule": {
+      const next = inset(b, 0.78);
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.size} height={next.size} rx={size * 0.24} />;
+    }
+    case "leaf": {
+      const next = inset(b, 0.92);
+      const right = next.x + next.size;
+      const bottom = next.y + next.size;
+      return <path key={keyPrefix} d={`M ${next.x} ${bottom} C ${next.x} ${next.y + size * 0.2} ${right - size * 0.1} ${next.y} ${right} ${next.y} C ${right} ${bottom - size * 0.2} ${next.x + size * 0.1} ${bottom} ${next.x} ${bottom} Z`} />;
+    }
+    case "spark":
+      return <path key={keyPrefix} d={starPath(inset(b, 0.88), 0.34)} />;
+    case "cross":
+      return <path key={keyPrefix} d={plusPath(inset(b, 0.92), 0.38)} />;
+    case "pixel-dots": {
+      const r = size * 0.16;
+      return [
+        <circle key={`${keyPrefix}-a`} cx={x + size * 0.32} cy={y + size * 0.32} r={r} />,
+        <circle key={`${keyPrefix}-b`} cx={x + size * 0.68} cy={y + size * 0.32} r={r} />,
+        <circle key={`${keyPrefix}-c`} cx={x + size * 0.32} cy={y + size * 0.68} r={r} />,
+        <circle key={`${keyPrefix}-d`} cx={x + size * 0.68} cy={y + size * 0.68} r={r} />,
+      ];
+    }
+    case "diagonal": {
+      const next = inset(b, 0.84);
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.size} height={next.size} rx={size * 0.1} transform={`rotate(-12 ${cx} ${cy})`} />;
+    }
+    case "orbit":
+      return [
+        <circle key={`${keyPrefix}-a`} cx={cx} cy={cy} r={size * 0.23} />,
+        <circle key={`${keyPrefix}-b`} cx={cx - size * 0.24} cy={cy - size * 0.2} r={size * 0.16} />,
+        <circle key={`${keyPrefix}-c`} cx={cx + size * 0.24} cy={cy + size * 0.2} r={size * 0.16} />,
+      ];
+    default:
+      return <rect key={keyPrefix} x={x} y={y} width={size} height={size} rx={size * 0.04} />;
+  }
+};
+
+const ringShape = (outer: string, inner: string, key: string) => <path key={key} d={`${outer} ${inner}`} fillRule="evenodd" clipRule="evenodd" />;
+
+const roughOuter = (x: number, y: number, size: number, keyPrefix: string) => {
+  const cell = size / 7;
+  const shapes: JSX.Element[] = [];
+  for (let row = 0; row < 7; row += 1) {
+    for (let col = 0; col < 7; col += 1) {
+      if (row > 0 && row < 6 && col > 0 && col < 6) continue;
+      const jitter = (row + col) % 2 === 0 ? 0 : cell * 0.08;
+      shapes.push(<rect key={`${keyPrefix}-${row}-${col}`} x={x + col * cell + jitter} y={y + row * cell} width={cell * 0.86} height={cell * 0.86} rx={cell * 0.05} />);
+    }
+  }
+  return shapes;
+};
+
+const dottedOuter = (x: number, y: number, size: number, keyPrefix: string) => {
+  const cell = size / 7;
+  const shapes: JSX.Element[] = [];
+  for (let row = 0; row < 7; row += 1) {
+    for (let col = 0; col < 7; col += 1) {
+      if (row > 0 && row < 6 && col > 0 && col < 6) continue;
+      shapes.push(<circle key={`${keyPrefix}-${row}-${col}`} cx={x + cell * (col + 0.5)} cy={y + cell * (row + 0.5)} r={cell * 0.35} />);
+    }
+  }
+  return shapes;
+};
+
+const bracketOuter = (x: number, y: number, size: number, keyPrefix: string) => {
+  const t = size / 7;
+  const l = size * 0.42;
+  const r = size * 0.05;
+  const right = x + size;
+  const bottom = y + size;
+  return [
+    <rect key={`${keyPrefix}-a`} x={x} y={y} width={l} height={t} rx={r} />,
+    <rect key={`${keyPrefix}-b`} x={x} y={y} width={t} height={l} rx={r} />,
+    <rect key={`${keyPrefix}-c`} x={right - l} y={y} width={l} height={t} rx={r} />,
+    <rect key={`${keyPrefix}-d`} x={right - t} y={y} width={t} height={l} rx={r} />,
+    <rect key={`${keyPrefix}-e`} x={x} y={bottom - t} width={l} height={t} rx={r} />,
+    <rect key={`${keyPrefix}-f`} x={x} y={bottom - l} width={t} height={l} rx={r} />,
+    <rect key={`${keyPrefix}-g`} x={right - l} y={bottom - t} width={l} height={t} rx={r} />,
+    <rect key={`${keyPrefix}-h`} x={right - t} y={bottom - l} width={t} height={l} rx={r} />,
+  ];
+};
+
+const outerEyeShape = (style: QREyeOuterStyle, x: number, y: number, size: number, keyPrefix: string) => {
+  const outer = { x, y, size };
+  const insetSize = size / 7;
+  const inner = { x: x + insetSize, y: y + insetSize, size: size - insetSize * 2 };
+
+  switch (style) {
+    case "dot":
+      return ringShape(circlePath(outer), circlePath(inner), keyPrefix);
+    case "dots":
+      return dottedOuter(x, y, size, keyPrefix);
+    case "rounded":
+      return ringShape(roundedRectPath(outer, size * 0.14), roundedRectPath(inner, size * 0.06), keyPrefix);
+    case "classy":
+      return ringShape(octagonPath(outer, size * 0.08), roundedRectPath(inner, size * 0.02), keyPrefix);
+    case "classy-rounded":
+      return ringShape(roundedRectPath(outer, size * 0.24), octagonPath(inner, size * 0.08), keyPrefix);
+    case "extra-rounded":
+    case "frame-soft":
+      return ringShape(roundedRectPath(outer, size * 0.2), roundedRectPath(inner, size * 0.1), keyPrefix);
+    case "frame-thin": {
+      const thinInner = { x: x + size * 0.19, y: y + size * 0.19, size: size - size * 0.38 };
+      return ringShape(roundedRectPath(outer, size * 0.08), roundedRectPath(thinInner, size * 0.04), keyPrefix);
+    }
+    case "octagon":
+      return ringShape(octagonPath(outer, size * 0.18), octagonPath(inner, size * 0.12), keyPrefix);
+    case "bevel":
+      return ringShape(octagonPath(outer, size * 0.11), octagonPath(inner, size * 0.06), keyPrefix);
+    case "notch": {
+      const cut = size * 0.11;
+      const outerPath = `M ${x + cut} ${y} H ${x + size - cut} L ${x + size} ${y + cut} V ${y + size - cut} L ${x + size - cut} ${y + size} H ${x + cut} L ${x} ${y + size - cut} V ${y + cut} Z`;
+      return ringShape(outerPath, roundedRectPath(inner, size * 0.04), keyPrefix);
+    }
+    case "bracket":
+      return bracketOuter(x, y, size, keyPrefix);
+    case "pill":
+      return ringShape(roundedRectPath(outer, size * 0.28), roundedRectPath(inner, size * 0.18), keyPrefix);
+    case "rough":
+      return roughOuter(x, y, size, keyPrefix);
+    default:
+      return ringShape(roundedRectPath(outer, size * 0.02), roundedRectPath(inner, size * 0.02), keyPrefix);
+  }
+};
+
+const innerEyeShape = (style: QREyeInnerStyle, x: number, y: number, size: number, keyPrefix: string) => {
+  const b = { x, y, size };
+  const cx = x + size / 2;
+  const cy = y + size / 2;
+
+  switch (style) {
+    case "dot":
+      return <circle key={keyPrefix} cx={cx} cy={cy} r={size * 0.5} />;
+    case "dots": {
+      const cell = size / 3;
+      return Array.from({ length: 9 }, (_, index) => {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        return <circle key={`${keyPrefix}-${index}`} cx={x + cell * (col + 0.5)} cy={y + cell * (row + 0.5)} r={cell * 0.29} />;
+      });
+    }
+    case "rounded":
+      return <rect key={keyPrefix} x={x} y={y} width={size} height={size} rx={size * 0.24} />;
+    case "classy":
+      return <path key={keyPrefix} d={octagonPath(b, size * 0.13)} />;
+    case "classy-rounded":
+      return <path key={keyPrefix} d={roundedRectPath(b, size * 0.28)} />;
+    case "extra-rounded":
+      return <rect key={keyPrefix} x={x} y={y} width={size} height={size} rx={size * 0.38} />;
+    case "soft-square": {
+      const next = inset(b, 0.86);
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.size} height={next.size} rx={size * 0.2} />;
+    }
+    case "tiny-square": {
+      const next = inset(b, 0.62);
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.size} height={next.size} rx={size * 0.08} />;
+    }
+    case "octagon":
+      return <path key={keyPrefix} d={octagonPath(inset(b, 0.86), size * 0.14)} />;
+    case "diamond":
+      return <path key={keyPrefix} d={diamondPath(inset(b, 0.82))} />;
+    case "vertical-pills":
+      return [-0.24, 0, 0.24].map((offset) => <rect key={`${keyPrefix}-${offset}`} x={cx + size * offset - size * 0.09} y={y + size * 0.11} width={size * 0.18} height={size * 0.78} rx={size * 0.09} />);
+    case "horizontal-pills":
+      return [-0.24, 0, 0.24].map((offset) => <rect key={`${keyPrefix}-${offset}`} x={x + size * 0.11} y={cy + size * offset - size * 0.09} width={size * 0.78} height={size * 0.18} rx={size * 0.09} />);
+    case "flower":
+      return [
+        <circle key={`${keyPrefix}-a`} cx={cx} cy={cy} r={size * 0.2} />,
+        <circle key={`${keyPrefix}-b`} cx={cx - size * 0.23} cy={cy} r={size * 0.16} />,
+        <circle key={`${keyPrefix}-c`} cx={cx + size * 0.23} cy={cy} r={size * 0.16} />,
+        <circle key={`${keyPrefix}-d`} cx={cx} cy={cy - size * 0.23} r={size * 0.16} />,
+        <circle key={`${keyPrefix}-e`} cx={cx} cy={cy + size * 0.23} r={size * 0.16} />,
+      ];
+    case "circle-grid": {
+      const cell = size / 3;
+      return Array.from({ length: 9 }, (_, index) => {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        return <circle key={`${keyPrefix}-${index}`} cx={x + cell * (col + 0.5)} cy={y + cell * (row + 0.5)} r={cell * 0.3} />;
+      });
+    }
+    case "slash": {
+      const next = { x: x + size * 0.31, y: y + size * 0.04, width: size * 0.38, height: size * 0.92 };
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.width} height={next.height} rx={size * 0.08} transform={`rotate(-45 ${cx} ${cy})`} />;
+    }
+    case "inset": {
+      const next = inset(b, 0.7);
+      return <rect key={keyPrefix} x={next.x} y={next.y} width={next.size} height={next.size} rx={size * 0.08} />;
+    }
+    case "burst":
+      return <path key={keyPrefix} d={starPath(inset(b, 0.88), 0.36)} />;
+    default:
+      return <rect key={keyPrefix} x={x} y={y} width={size} height={size} rx={size * 0.04} />;
+  }
+};
+
+function ModulePreview({ type }: { type: QRModuleStyle }) {
   return (
-    <svg viewBox="0 0 88 48" aria-hidden="true" className="h-14 w-full text-current">
-      <rect x="1" y="1" width="86" height="46" rx="8" className="fill-white/65 dark:fill-slate-950/35" />
-      <g fill="currentColor">{moduleCells.map(([x, y], index) => draw(x, y, index))}</g>
+    <svg viewBox="0 0 82 58" aria-hidden="true" className="h-10 w-auto max-w-full text-current sm:h-11">
+      <rect x="1" y="1" width="80" height="56" rx="7" className="fill-white" />
+      <g fill="currentColor">{moduleCells.flatMap(([x, y], index) => moduleShape(type, x, y, 9, index, `${type}-${index}`))}</g>
     </svg>
   );
-}
-
-function EyeShape({ x, y, size, type }: { x: number; y: number; size: number; type: QREyeOuterStyle | QREyeInnerStyle }) {
-  if (type === "dot") return <circle cx={x + size / 2} cy={y + size / 2} r={size / 2} />;
-  if (type === "dots") {
-    const centerX = x + size / 2;
-    const centerY = y + size / 2;
-    const ringRadius = size * 0.32;
-    const dotRadius = Math.max(1.5, size * 0.09);
-    const points = Array.from({ length: 8 }, (_, index) => {
-      const angle = (Math.PI * 2 * index) / 8;
-      return [centerX + Math.cos(angle) * ringRadius, centerY + Math.sin(angle) * ringRadius] as const;
-    });
-
-    return (
-      <g>
-        {points.map(([dotX, dotY], index) => (
-          <circle key={`${type}-${index}`} cx={dotX} cy={dotY} r={dotRadius} />
-        ))}
-      </g>
-    );
-  }
-  if (type === "rounded") return <rect x={x} y={y} width={size} height={size} rx={size * 0.24} />;
-  if (type === "classy") return <rect x={x} y={y} width={size} height={size} rx={size * 0.15} transform={`rotate(-8 ${x + size / 2} ${y + size / 2})`} />;
-  if (type === "classy-rounded") return <rect x={x} y={y} width={size} height={size} rx={size * 0.34} transform={`rotate(-7 ${x + size / 2} ${y + size / 2})`} />;
-  if (type === "extra-rounded") return <rect x={x} y={y} width={size} height={size} rx={size * 0.38} />;
-  return <rect x={x} y={y} width={size} height={size} rx={size * 0.08} />;
 }
 
 function EyePreview({
@@ -133,267 +356,210 @@ function EyePreview({
 }) {
   const outerType = outer ?? "extra-rounded";
   const innerType = inner ?? "dot";
+  const eyeSize = 36;
+  const innerSize = (eyeSize * 3) / 7;
+  const innerOffset = (eyeSize * 2) / 7;
 
   return (
-    <svg viewBox="0 0 88 48" aria-hidden="true" className="h-14 w-full text-current">
-      <rect x="1" y="1" width="86" height="46" rx="8" className="fill-white/65 dark:fill-slate-950/35" />
-      <g transform="translate(16 4)">
-        <g fill="currentColor">
-          <EyeShape x={0} y={0} size={40} type={outerType} />
-        </g>
-        <g className="fill-white dark:fill-slate-950">
-          <EyeShape x={9} y={9} size={22} type={outerType} />
-        </g>
-        <g fill="currentColor">
-          <EyeShape x={15} y={15} size={10} type={innerType} />
-        </g>
+    <svg viewBox="0 0 82 58" aria-hidden="true" className="h-10 w-auto max-w-full text-current sm:h-11">
+      <rect x="1" y="1" width="80" height="56" rx="7" className="fill-white" />
+      <g transform="translate(10 11)" fill="currentColor">
+        {outerEyeShape(outerType, 0, 0, eyeSize, `${outerType}-outer`)}
+        {innerEyeShape(innerType, innerOffset, innerOffset, innerSize, `${innerType}-inner`)}
       </g>
-      <g transform="translate(58 28)" className="opacity-70">
-        <rect x="0" y="0" width="6" height="6" rx="1" fill="currentColor" />
-        <circle cx="15" cy="4" r="4" fill="currentColor" />
-        <rect x="6" y="12" width="12" height="6" rx="3" fill="currentColor" />
-      </g>
-    </svg>
-  );
-}
-
-function FullPresetPreview({ moduleStyle, outerStyle, innerStyle }: { moduleStyle: QRModuleStyle; outerStyle: QREyeOuterStyle; innerStyle: QREyeInnerStyle }) {
-  const miniCells = [
-    [0, 0],
-    [8, 0],
-    [16, 0],
-    [0, 8],
-    [16, 8],
-    [24, 8],
-    [8, 16],
-    [24, 16],
-    [0, 24],
-    [8, 24],
-    [16, 24],
-    [24, 24],
-  ] as const;
-
-  const drawCell = (x: number, y: number, index: number) => {
-    const px = 34 + x;
-    const py = 34 + y;
-    if (moduleStyle === "dots") return <circle key={`m-${x}-${y}`} cx={px + 3} cy={py + 3} r="2.8" />;
-    if (moduleStyle === "extra-rounded") return <rect key={`m-${x}-${y}`} x={px} y={py} width="7" height="6" rx="3.2" />;
-    if (moduleStyle === "rounded" || moduleStyle === "classy-rounded") return <rect key={`m-${x}-${y}`} x={px} y={py} width="6" height="6" rx={moduleStyle === "rounded" ? 2 : 2.6} />;
-    if (moduleStyle === "classy") {
-      const rounded = index % 2 === 0;
-      return <rect key={`m-${x}-${y}`} x={px} y={py} width="6" height="6" rx={rounded ? 2 : 0.8} />;
-    }
-    return <rect key={`m-${x}-${y}`} x={px} y={py} width="6" height="6" rx="0.6" />;
-  };
-
-  return (
-    <svg viewBox="0 0 96 96" aria-hidden="true" className="h-20 w-full text-current">
-      <rect x="1" y="1" width="94" height="94" rx="12" className="fill-white/80 dark:fill-slate-950/45" />
-      <g transform="translate(8 8)" fill="currentColor">
-        <EyeShape x={0} y={0} size={24} type={outerStyle} />
-      </g>
-      <g transform="translate(8 8)" className="fill-white dark:fill-slate-950">
-        <EyeShape x={5} y={5} size={14} type={outerStyle} />
-      </g>
-      <g transform="translate(8 8)" fill="currentColor">
-        <EyeShape x={9} y={9} size={6} type={innerStyle} />
-      </g>
-
-      <g transform="translate(64 8)" fill="currentColor">
-        <EyeShape x={0} y={0} size={24} type={outerStyle} />
-      </g>
-      <g transform="translate(64 8)" className="fill-white dark:fill-slate-950">
-        <EyeShape x={5} y={5} size={14} type={outerStyle} />
-      </g>
-      <g transform="translate(64 8)" fill="currentColor">
-        <EyeShape x={9} y={9} size={6} type={innerStyle} />
-      </g>
-
-      <g transform="translate(8 64)" fill="currentColor">
-        <EyeShape x={0} y={0} size={24} type={outerStyle} />
-      </g>
-      <g transform="translate(8 64)" className="fill-white dark:fill-slate-950">
-        <EyeShape x={5} y={5} size={14} type={outerStyle} />
-      </g>
-      <g transform="translate(8 64)" fill="currentColor">
-        <EyeShape x={9} y={9} size={6} type={innerStyle} />
-      </g>
-
-      <g fill="currentColor" className="opacity-95">
-        {miniCells.map(([x, y], index) => drawCell(x, y, index))}
+      <g transform="translate(55 32)" className="opacity-65" fill="currentColor">
+        {moduleShape("rounded", 0, 0, 6, 0, "mini-a")}
+        {moduleShape("dots", 13, 0, 6, 1, "mini-b")}
+        {moduleShape("horizontal-bars", 4, 12, 14, 2, "mini-c")}
       </g>
     </svg>
   );
 }
 
 function VisualOptions<T extends string>({
+  value,
+  options,
+  onChange,
+  preview,
+  columns,
+  language,
+}: {
+  value: T;
+  options: QRStyleOption<T>[];
+  onChange: (value: T) => void;
+  preview: (value: T) => JSX.Element;
+  columns: string;
+  language: AppLanguage;
+}) {
+  const isDe = language === "de";
+
+  return (
+    <div className={`grid ${columns} gap-2`}>
+      {options.map((option) => {
+        const active = option.value === value;
+        const optionLabel = isDe ? option.labelDe : option.labelEn;
+        const hint = isDe ? option.hintDe : option.hintEn;
+        return (
+          <button
+            type="button"
+            key={option.value}
+            title={`${optionLabel} - ${hint}`}
+            aria-label={`${optionLabel}: ${hint}`}
+            aria-pressed={active}
+            onClick={() => onChange(option.value)}
+            className={`type-card group relative overflow-hidden rounded-xl border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              active
+                ? "border-blue-200 bg-gradient-to-br from-white to-blue-50/60 text-slate-900 shadow-[0_24px_52px_-32px_rgba(59,130,246,0.18)]"
+                : "border-blue-100 bg-white text-slate-700 shadow-[0_10px_24px_-20px_rgba(59,130,246,0.08)] hover:border-blue-200 hover:bg-white hover:shadow-[0_20px_42px_-26px_rgba(59,130,246,0.16)]"
+            }`}
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute inset-x-0 top-0 h-px ${
+                active ? "bg-gradient-to-r from-blue-100 via-blue-300 to-blue-100" : "bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50"
+              }`}
+            />
+            <span
+              className={`mb-2 flex h-16 items-center justify-center rounded-lg border p-1.5 transition ${
+                active
+                  ? "border-blue-100 bg-white text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]"
+                  : "border-slate-100 bg-white text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] group-hover:text-blue-700"
+              }`}
+            >
+              {preview(option.value)}
+            </span>
+            <span className="block text-[15px] font-semibold tracking-normal">{optionLabel}</span>
+            <span className="mt-1 block text-xs leading-5 text-slate-500">{hint}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function AccordionSection<T extends string>({
+  id,
   label,
   value,
   options,
   onChange,
   preview,
+  columns,
+  language,
+  openSection,
+  onToggle,
 }: {
+  id: ShapeSectionId;
   label: string;
   value: T;
-  options: { value: T; label: string; hint: string }[];
+  options: QRStyleOption<T>[];
   onChange: (value: T) => void;
   preview: (value: T) => JSX.Element;
+  columns: string;
+  language: AppLanguage;
+  openSection: ShapeSectionId | null;
+  onToggle: (section: ShapeSectionId) => void;
 }) {
+  const isDe = language === "de";
+  const open = openSection === id;
   const selectedOption = options.find((option) => option.value === value);
+  const selectedLabel = selectedOption ? (isDe ? selectedOption.labelDe : selectedOption.labelEn) : "";
 
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{label}</p>
+    <div
+      className={`overflow-hidden rounded-lg border shadow-sm transition ${
+        open ? "border-blue-200 bg-gradient-to-br from-white to-blue-50/35 shadow-[0_18px_42px_-32px_rgba(59,130,246,0.14)]" : "border-blue-100 bg-white shadow-[0_10px_24px_-22px_rgba(59,130,246,0.08)]"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50/90 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+        aria-expanded={open}
+      >
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+            {label}
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+              {options.length}
+            </span>
+          </span>
+          <span className="mt-0.5 block truncate text-xs text-slate-500">
+            {selectedOption ? `${isDe ? "Aktiv" : "Active"}: ${selectedLabel}` : isDe ? "Auswahl anzeigen" : "Show options"}
+          </span>
+        </span>
         {selectedOption ? (
-          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 ring-1 ring-blue-100 dark:bg-blue-950/45 dark:text-blue-100 dark:ring-blue-900/80">
-            {selectedOption.label}
+          <span className="hidden max-w-[38%] truncate rounded-full bg-blue-50/90 px-2.5 py-1 text-xs font-bold text-blue-800 ring-1 ring-blue-100 sm:inline-flex">
+            {selectedLabel}
           </span>
         ) : null}
-      </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {options.map((option) => {
-          const active = option.value === value;
-          return (
-            <button
-              type="button"
-              key={option.value}
-              onClick={() => onChange(option.value)}
-              className={`type-card group min-h-[124px] rounded-lg border p-2.5 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                active
-                  ? "border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-950 shadow-sm dark:border-blue-400 dark:from-blue-950/50 dark:to-cyan-950/35 dark:text-blue-50"
-                  : "border-slate-200 bg-white/82 text-slate-700 hover:border-blue-200 hover:bg-white dark:border-slate-800 dark:bg-slate-950/58 dark:text-slate-200 dark:hover:border-blue-800"
-              }`}
-            >
-              <span
-                className={`mb-2 flex rounded-md border p-1 transition ${
-                  active
-                    ? "border-blue-200 bg-white/74 text-blue-800 dark:border-blue-800 dark:bg-slate-950/35 dark:text-blue-100"
-                    : "border-slate-100 bg-slate-50/85 text-slate-600 group-hover:text-blue-700 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300"
-                }`}
-              >
-                {preview(option.value)}
-              </span>
-              <span className="block text-sm font-semibold">{option.label}</span>
-              <span className="mt-0.5 block text-xs leading-5 text-slate-500 dark:text-slate-400">{option.hint}</span>
-            </button>
-          );
-        })}
-      </div>
+        <HiOutlineChevronDown aria-hidden="true" className={`h-4 w-4 shrink-0 text-slate-500 transition ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open ? (
+        <div className="border-t border-blue-100 bg-gradient-to-b from-blue-50/35 to-white p-3 sm:p-4">
+          <VisualOptions
+            value={value}
+            options={options}
+            onChange={onChange}
+            preview={preview}
+            columns={columns}
+            language={language}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export function ShapeSelector({ language, design, onChange }: ShapeSelectorProps) {
   const isDe = language === "de";
-  const moduleOptionsLocalized: { value: QRModuleStyle; label: string; hint: string }[] = isDe
-    ? [
-        { value: "square", label: "Quadratisch", hint: "klare Kanten" },
-        { value: "dots", label: "Punkte", hint: "weich und modern" },
-        { value: "rounded", label: "Abgerundet", hint: "sanfte Module" },
-        { value: "classy", label: "Klassisch", hint: "technisch markant" },
-        { value: "classy-rounded", label: "Klassisch rund", hint: "markant + weich" },
-        { value: "extra-rounded", label: "Extra-rounded", hint: "sehr organisch" },
-      ]
-    : moduleOptions;
-  const outerOptionsLocalized: { value: QREyeOuterStyle; label: string; hint: string }[] = isDe
-    ? [
-        { value: "square", label: "Quadrat", hint: "maximal robust" },
-        { value: "dot", label: "Punkt", hint: "kompakt" },
-        { value: "dots", label: "Micro-Punkte", hint: "organischer Look" },
-        { value: "rounded", label: "Rund", hint: "freundlich" },
-        { value: "classy", label: "Klassisch", hint: "premium Kontur" },
-        { value: "classy-rounded", label: "Klassisch rund", hint: "weich + premium" },
-        { value: "extra-rounded", label: "Extra rund", hint: "premium" },
-      ]
-    : outerOptions;
-  const innerOptionsLocalized: { value: QREyeInnerStyle; label: string; hint: string }[] = isDe
-    ? [
-        { value: "square", label: "Quadrat", hint: "präzise" },
-        { value: "dot", label: "Punkt", hint: "weich" },
-        { value: "dots", label: "Micro-Punkte", hint: "leicht" },
-        { value: "rounded", label: "Rund", hint: "balanciert" },
-        { value: "classy", label: "Klassisch", hint: "markant" },
-        { value: "classy-rounded", label: "Klassisch rund", hint: "fließend" },
-        { value: "extra-rounded", label: "Extra rund", hint: "organisch" },
-      ]
-    : innerOptions;
-  const selectedPresetId = shapePresets.find(
-    (preset) =>
-      preset.module === design.moduleStyle &&
-      preset.outer === design.eyeOuterStyle &&
-      preset.inner === design.eyeInnerStyle,
-  )?.id;
+  const [openSection, setOpenSection] = useState<ShapeSectionId | null>("module");
+
+  const toggleSection = (section: ShapeSectionId) => {
+    setOpenSection((current) => (current === section ? null : section));
+  };
 
   return (
-    <div className="grid gap-5">
-      <div>
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{isDe ? "Shape-Designs" : "Shape Designs"}</p>
-          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-100 dark:bg-blue-950/45 dark:text-blue-100 dark:ring-blue-900/80">
-            {isDe ? "Vorschau-Presets" : "Preview Presets"}
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
-          {shapePresets.map((preset) => {
-            const active = selectedPresetId === preset.id;
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() =>
-                  onChange({
-                    ...design,
-                    moduleStyle: preset.module,
-                    eyeOuterStyle: preset.outer,
-                    eyeInnerStyle: preset.inner,
-                  })
-                }
-                className={`type-card group rounded-lg border p-2.5 text-left transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  active
-                    ? "border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-950 shadow-sm dark:border-blue-400 dark:from-blue-950/55 dark:to-cyan-950/35 dark:text-blue-50"
-                    : "border-slate-200 bg-white/88 text-slate-700 hover:border-blue-200 hover:bg-white dark:border-slate-800 dark:bg-slate-900/86 dark:text-slate-200 dark:hover:border-blue-800"
-                }`}
-              >
-                <span
-                  className={`mb-2 flex rounded-md border p-1 ${
-                    active
-                      ? "border-blue-200 bg-white/74 text-blue-700 dark:border-blue-800 dark:bg-slate-950/35 dark:text-blue-100"
-                      : "border-slate-100 bg-slate-50/85 text-slate-600 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300"
-                  }`}
-                >
-                  <FullPresetPreview moduleStyle={preset.module} outerStyle={preset.outer} innerStyle={preset.inner} />
-                </span>
-                <span className="block truncate text-sm font-semibold">{isDe ? preset.labelDe : preset.labelEn}</span>
-                <span className="mt-0.5 block text-xs leading-5 text-slate-500 dark:text-slate-400">{isDe ? preset.hintDe : preset.hintEn}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      <VisualOptions
+    <div className="grid gap-2">
+      <AccordionSection
+        id="module"
         label={isDe ? "QR-Modul-Form" : "QR Module Shape"}
         value={design.moduleStyle}
-        options={moduleOptionsLocalized}
+        options={moduleStyleOptions}
         onChange={(moduleStyle) => onChange({ ...design, moduleStyle })}
         preview={(moduleStyle) => <ModulePreview type={moduleStyle} />}
+        columns="grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+        language={language}
+        openSection={openSection}
+        onToggle={toggleSection}
       />
-      <div className="grid gap-5 lg:grid-cols-2">
-        <VisualOptions
-          label={isDe ? "Eckform außen" : "Outer Eye Shape"}
-          value={design.eyeOuterStyle}
-          options={outerOptionsLocalized}
-          onChange={(eyeOuterStyle) => onChange({ ...design, eyeOuterStyle })}
-          preview={(eyeOuterStyle) => <EyePreview outer={eyeOuterStyle} inner={design.eyeInnerStyle} />}
-        />
-        <VisualOptions
-          label={isDe ? "Eckform innen" : "Inner Eye Shape"}
-          value={design.eyeInnerStyle}
-          options={innerOptionsLocalized}
-          onChange={(eyeInnerStyle) => onChange({ ...design, eyeInnerStyle })}
-          preview={(eyeInnerStyle) => <EyePreview outer={design.eyeOuterStyle} inner={eyeInnerStyle} />}
-        />
-      </div>
+
+      <AccordionSection
+        id="outer"
+        label={isDe ? "Eckform außen" : "Outer Eye Shape"}
+        value={design.eyeOuterStyle}
+        options={eyeOuterStyleOptions}
+        onChange={(eyeOuterStyle) => onChange({ ...design, eyeOuterStyle })}
+        preview={(eyeOuterStyle) => <EyePreview outer={eyeOuterStyle} inner={design.eyeInnerStyle} />}
+        columns="grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4"
+        language={language}
+        openSection={openSection}
+        onToggle={toggleSection}
+      />
+
+      <AccordionSection
+        id="inner"
+        label={isDe ? "Eckform innen" : "Inner Eye Shape"}
+        value={design.eyeInnerStyle}
+        options={eyeInnerStyleOptions}
+        onChange={(eyeInnerStyle) => onChange({ ...design, eyeInnerStyle })}
+        preview={(eyeInnerStyle) => <EyePreview outer={design.eyeOuterStyle} inner={eyeInnerStyle} />}
+        columns="grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4"
+        language={language}
+        openSection={openSection}
+        onToggle={toggleSection}
+      />
     </div>
   );
 }

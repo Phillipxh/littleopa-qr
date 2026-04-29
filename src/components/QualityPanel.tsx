@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { HiOutlineCheckCircle, HiOutlineExclamationTriangle, HiOutlineInformationCircle } from "react-icons/hi2";
 import type { QRQualityResult } from "../types";
 
 interface QualityPanelProps {
@@ -13,7 +13,7 @@ const tone = {
 };
 
 export function QualityPanel({ quality }: QualityPanelProps) {
-  const Icon = quality.level === "Excellent" || quality.level === "Good" ? CheckCircle2 : AlertTriangle;
+  const Icon = quality.level === "Excellent" || quality.level === "Good" ? HiOutlineCheckCircle : HiOutlineExclamationTriangle;
 
   return (
     <section className="premium-card p-4">
@@ -36,7 +36,7 @@ export function QualityPanel({ quality }: QualityPanelProps) {
             <ul className="grid gap-2">
               {quality.warnings.map((warning) => (
                 <li key={warning} className="flex items-start gap-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  <AlertTriangle aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-300" />
+                  <HiOutlineExclamationTriangle aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-300" />
                   {warning}
                 </li>
               ))}
@@ -49,7 +49,7 @@ export function QualityPanel({ quality }: QualityPanelProps) {
             <ul className="grid gap-2">
               {quality.tips.map((tip) => (
                 <li key={tip} className="flex items-start gap-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  <Info aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" />
+                  <HiOutlineInformationCircle aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" />
                   {tip}
                 </li>
               ))}

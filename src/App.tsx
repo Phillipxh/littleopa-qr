@@ -42,6 +42,13 @@ const normalizeLogo = (logo: QRLogoOptions): QRLogoOptions => ({
   ...defaultLogo,
   ...logo,
   useTypeIcon: Boolean(logo.useTypeIcon),
+  iconColor: logo.iconColor || "",
+  iconBackgroundColor: logo.iconBackgroundColor || defaultLogo.iconBackgroundColor,
+  iconBorderColor: logo.iconBorderColor || defaultLogo.iconBorderColor,
+  iconBorderStyle: logo.iconBorderStyle || defaultLogo.iconBorderStyle,
+  iconBorderWidth: typeof logo.iconBorderWidth === "number" ? logo.iconBorderWidth : defaultLogo.iconBorderWidth,
+  iconRadius: typeof logo.iconRadius === "number" ? logo.iconRadius : defaultLogo.iconRadius,
+  iconShadow: typeof logo.iconShadow === "number" ? logo.iconShadow : defaultLogo.iconShadow,
 });
 
 const normalizeSettings = (settings: StoredSettings): StoredSettings => ({
@@ -50,8 +57,8 @@ const normalizeSettings = (settings: StoredSettings): StoredSettings => ({
   language: settings.language === "en" ? "en" : "de",
 });
 
-const resolvePreviewLogo = (logo: QRLogoOptions, type: QRContentType, design: QRDesignOptions): QRLogoOptions =>
-  resolveLogoForType(logo, type, design.eyeColor || design.foregroundColor);
+const resolvePreviewLogo = (logo: QRLogoOptions, type: QRContentType, design: QRDesignOptions, data: QRFormData): QRLogoOptions =>
+  resolveLogoForType(logo, type, design.eyeColor || design.foregroundColor, data);
 
 function App() {
   const initial = useMemo(() => normalizeSettings(loadSettings() ?? freshSettings()), []);
@@ -68,7 +75,7 @@ function App() {
 
   const value = useMemo(() => buildQRValue(contentType, data), [contentType, data]);
   const validation = useMemo(() => validateQRInput(contentType, data, language), [contentType, data, language]);
-  const resolvedLogo = useMemo(() => resolvePreviewLogo(logo, contentType, design), [logo, contentType, design]);
+  const resolvedLogo = useMemo(() => resolvePreviewLogo(logo, contentType, design, data), [logo, contentType, design, data]);
   const quality = useMemo(() => evaluateQuality(value, design, resolvedLogo, validation, language), [value, design, resolvedLogo, validation, language]);
   const [preview, setPreview] = useState<PreviewState>({ value, design, logo: resolvedLogo });
 
@@ -110,7 +117,7 @@ function App() {
     setLiveUpdate(clean.liveUpdate);
     setDarkMode(clean.darkMode);
     setLanguage(clean.language);
-    setPreview({ value: buildQRValue(clean.contentType, clean.data), design: clean.design, logo: resolvePreviewLogo(clean.logo, clean.contentType, clean.design) });
+    setPreview({ value: buildQRValue(clean.contentType, clean.data), design: clean.design, logo: resolvePreviewLogo(clean.logo, clean.contentType, clean.design, clean.data) });
   };
 
   const loadExample = () => {
@@ -145,7 +152,7 @@ function App() {
     setDesign(item.design);
     setLogo(nextLogo);
     setFileName(item.fileName);
-    setPreview({ value: item.value, design: item.design, logo: resolvePreviewLogo(nextLogo, item.contentType, item.design) });
+    setPreview({ value: item.value, design: item.design, logo: resolvePreviewLogo(nextLogo, item.contentType, item.design, item.data) });
   };
 
   const importSettings = (next: StoredSettings) => {
@@ -161,7 +168,7 @@ function App() {
     setPreview({
       value: buildQRValue(normalized.contentType, normalized.data),
       design: normalized.design,
-      logo: resolvePreviewLogo(normalized.logo, normalized.contentType, normalized.design),
+      logo: resolvePreviewLogo(normalized.logo, normalized.contentType, normalized.design, normalized.data),
     });
   };
 
@@ -184,7 +191,7 @@ function App() {
           <DynamicQRForm type={contentType} data={data} language={language} validation={validation} update={updateField} />
           <DesignPanel language={language} design={design} onChange={setDesign} />
           <Section eyebrow={language === "de" ? "4. Logo hinzufügen" : "4. Add logo"} title={language === "de" ? "Logo im QR-Code" : "Logo in QR code"}>
-            <LogoUploader language={language} logo={logo} contentType={contentType} design={design} onChange={setLogo} />
+            <LogoUploader language={language} logo={logo} contentType={contentType} data={data} design={design} onChange={setLogo} />
           </Section>
         </>
       }

@@ -1,9 +1,10 @@
 import type { CornerDotType, CornerSquareType, DotType, FileExtension, Options } from "qr-code-styling";
 import type { QRDesignOptions, QRExportFormat, QRLogoOptions } from "../types";
+import { eyeInnerStyleTypeMap, eyeOuterStyleTypeMap, moduleStyleTypeMap } from "./shapeStyles";
 
-const mapDotType = (value: QRDesignOptions["moduleStyle"]): DotType => value;
-const mapCornerSquareType = (value: QRDesignOptions["eyeOuterStyle"]): CornerSquareType => value;
-const mapCornerDotType = (value: QRDesignOptions["eyeInnerStyle"]): CornerDotType => value;
+const mapDotType = (value: QRDesignOptions["moduleStyle"]): DotType => moduleStyleTypeMap[value];
+const mapCornerSquareType = (value: QRDesignOptions["eyeOuterStyle"]): CornerSquareType => eyeOuterStyleTypeMap[value];
+const mapCornerDotType = (value: QRDesignOptions["eyeInnerStyle"]): CornerDotType => eyeInnerStyleTypeMap[value];
 
 const transparentPixel = "rgba(255,255,255,0)";
 
