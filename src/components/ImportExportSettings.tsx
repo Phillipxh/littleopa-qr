@@ -1,4 +1,4 @@
-import { Check, Clipboard, Download, Upload } from "lucide-react";
+import { HiOutlineArrowDownTray, HiOutlineArrowUpTray, HiOutlineCheck, HiOutlineClipboardDocument } from "react-icons/hi2";
 import { useRef, useState } from "react";
 import type { StoredSettings } from "../types";
 import { copyToClipboard, sanitizeFilename } from "../utils/export";
@@ -59,7 +59,7 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
           onClick={exportJson}
           className="premium-button inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-teal-200 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
-          <Download aria-hidden="true" className="h-4 w-4" />
+          <HiOutlineArrowDownTray aria-hidden="true" className="h-4 w-4" />
           Export JSON
         </button>
         <input
@@ -77,7 +77,7 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
           onClick={() => inputRef.current?.click()}
           className="premium-button inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
-          <Upload aria-hidden="true" className="h-4 w-4" />
+          <HiOutlineArrowUpTray aria-hidden="true" className="h-4 w-4" />
           Import JSON
         </button>
         <button
@@ -91,7 +91,7 @@ export function ImportExportSettings({ settings, onImport }: ImportExportSetting
           }}
           className="premium-button inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/88 px-3 text-sm font-medium text-slate-700 shadow-sm hover:border-indigo-200 hover:bg-indigo-50/70 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900/82 dark:text-slate-200"
         >
-          {copied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Clipboard aria-hidden="true" className="h-4 w-4" />}
+          {copied ? <HiOutlineCheck aria-hidden="true" className="h-4 w-4" /> : <HiOutlineClipboardDocument aria-hidden="true" className="h-4 w-4" />}
           Copy settings
         </button>
         {status ? <p className="rounded-md border border-slate-100 bg-white/70 px-3 py-2 text-sm text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-950/55 dark:text-slate-300">{status}</p> : null}

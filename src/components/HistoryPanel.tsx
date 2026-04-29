@@ -1,4 +1,4 @@
-import { Clock3, Trash2 } from "lucide-react";
+import { HiOutlineClock, HiOutlineTrash } from "react-icons/hi2";
 import type { HistoryItem } from "../types";
 
 interface HistoryPanelProps {
@@ -22,7 +22,7 @@ export function HistoryPanel({ history, onLoad, onClear }: HistoryPanelProps) {
             title="Clear history"
             className="premium-button inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 bg-white/88 text-slate-600 hover:border-red-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300"
           >
-            <Trash2 aria-hidden="true" className="h-4 w-4" />
+            <HiOutlineTrash aria-hidden="true" className="h-4 w-4" />
           </button>
         ) : null}
       </div>
@@ -36,7 +36,7 @@ export function HistoryPanel({ history, onLoad, onClear }: HistoryPanelProps) {
               className="premium-button rounded-md border border-slate-200 bg-white/70 p-3 text-left shadow-sm hover:border-teal-300 hover:bg-teal-50/70 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-800 dark:bg-slate-950/55 dark:hover:bg-teal-950/30"
             >
               <span className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
-                <Clock3 aria-hidden="true" className="h-4 w-4 text-slate-500" />
+                <HiOutlineClock aria-hidden="true" className="h-4 w-4 text-slate-500" />
                 {item.title}
               </span>
               <span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-400">

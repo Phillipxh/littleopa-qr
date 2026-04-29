@@ -1,4 +1,5 @@
 import type { QRDesignOptions } from "../types";
+import { eyeInnerStyleValues, eyeOuterStyleValues, moduleStyleValues } from "./shapeStyles";
 
 const palettes = [
   ["#0f172a", "#f8fafc", "#0f766e"],
@@ -10,9 +11,9 @@ const palettes = [
   ["#083344", "#ecfeff", "#7c2d12"],
 ];
 
-const moduleStyles: QRDesignOptions["moduleStyle"][] = ["square", "dots", "rounded", "classy", "classy-rounded", "extra-rounded"];
-const eyeOuterStyles: QRDesignOptions["eyeOuterStyle"][] = ["square", "dot", "extra-rounded", "rounded"];
-const eyeInnerStyles: QRDesignOptions["eyeInnerStyle"][] = ["square", "dot", "rounded"];
+const moduleStyles = moduleStyleValues;
+const eyeOuterStyles = eyeOuterStyleValues;
+const eyeInnerStyles = eyeInnerStyleValues;
 
 const pick = <T,>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
 

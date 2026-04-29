@@ -1,8 +1,9 @@
 import QRCodeStyling from "qr-code-styling";
-import { RefreshCw } from "lucide-react";
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { HiOutlineArrowPath } from "react-icons/hi2";
 import type { AppLanguage, QRDesignOptions, QRLogoOptions } from "../types";
 import { createQRCodeOptions } from "../utils/qrOptions";
+import { applyQRCodeStyleExtension } from "../utils/qrStyleExtension";
 
 interface QRPreviewProps {
   language: AppLanguage;
@@ -25,6 +26,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
     if (!containerRef.current) return;
     try {
       const qrCode = new QRCodeStyling(options);
+      applyQRCodeStyleExtension(qrCode, design);
       containerRef.current.innerHTML = "";
       qrCode.append(containerRef.current);
       qrCodeRef.current = qrCode;
@@ -73,7 +75,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
             onClick={onRefresh}
             className="premium-button premium-primary inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-3 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-950"
           >
-            <RefreshCw aria-hidden="true" className="h-4 w-4" />
+            <HiOutlineArrowPath aria-hidden="true" className="h-4 w-4" />
             {isDe ? "Vorschau aktualisieren" : "Refresh Preview"}
           </button>
         ) : null}

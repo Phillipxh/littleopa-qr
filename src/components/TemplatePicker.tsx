@@ -15,9 +15,9 @@ export function TemplatePicker({ language, onApply }: TemplatePickerProps) {
           key={template.id}
           type="button"
           onClick={() => onApply(template.design)}
-          className="type-card group rounded-lg border border-slate-200 bg-white/82 p-3 text-left shadow-sm hover:border-teal-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-800 dark:bg-slate-950/65 dark:hover:border-teal-500"
+          className="type-card group rounded-xl border border-blue-100 bg-white p-3 text-left shadow-[0_10px_24px_-20px_rgba(59,130,246,0.08)] hover:border-blue-200 hover:bg-white hover:shadow-[0_20px_42px_-26px_rgba(59,130,246,0.16)] focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-950/65 dark:hover:border-blue-500"
         >
-          <span className="mb-3 flex items-center gap-2">
+          <span className="mb-3 flex items-center gap-2 rounded-md border border-blue-100 bg-gradient-to-br from-white to-blue-50/55 p-2 dark:border-slate-800 dark:bg-slate-900/80">
             <span
               className="h-8 w-8 rounded-md border border-slate-200 dark:border-slate-700"
               style={{

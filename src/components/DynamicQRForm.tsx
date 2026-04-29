@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { HiOutlineCheckCircle, HiOutlineExclamationCircle } from "react-icons/hi2";
 import { getContentTypes } from "../data/contentTypes";
 import type { AppLanguage, QRContentType, QRFormData, ValidationResult } from "../types";
 import { Section } from "./Section";
@@ -100,7 +100,7 @@ export function DynamicQRForm({ type, data, language, validation, update }: Dyna
                 key={error}
                 className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm leading-6 text-red-800 dark:border-red-900/70 dark:bg-red-950/30 dark:text-red-100"
               >
-                <AlertCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+                <HiOutlineExclamationCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                 {error}
               </p>
             ))}
@@ -109,14 +109,14 @@ export function DynamicQRForm({ type, data, language, validation, update }: Dyna
                 key={warning}
                 className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-900 dark:border-amber-900/70 dark:bg-amber-950/30 dark:text-amber-100"
               >
-                <AlertCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+                <HiOutlineExclamationCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                 {warning}
               </p>
             ))}
           </div>
         ) : (
           <p className="flex items-start gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm leading-6 text-emerald-900 dark:border-emerald-900/70 dark:bg-emerald-950/30 dark:text-emerald-100">
-            <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+            <HiOutlineCheckCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
             {copy.ready}
           </p>
         )}

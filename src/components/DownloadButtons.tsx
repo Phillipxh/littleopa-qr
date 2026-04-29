@@ -1,20 +1,20 @@
 import QRCodeStyling from "qr-code-styling";
 import {
-  AlertTriangle,
-  Check,
-  Clock3,
-  Clipboard,
-  Copy,
-  Download,
-  FileArchive,
-  FileImage,
-  FileText,
-  ImageDown,
-  Trash2,
-  Upload,
-} from "lucide-react";
+  HiOutlineArchiveBox,
+  HiOutlineArrowDownTray,
+  HiOutlineArrowUpTray,
+  HiOutlineCheck,
+  HiOutlineClipboardDocument,
+  HiOutlineClipboardDocumentCheck,
+  HiOutlineClock,
+  HiOutlineDocumentText,
+  HiOutlineExclamationTriangle,
+  HiOutlinePhoto,
+  HiOutlineTrash,
+} from "react-icons/hi2";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { IconType } from "react-icons";
 import type { AppLanguage, HistoryItem, QRDesignOptions, QRExportFormat, QRQualityResult, StoredSettings, ValidationResult } from "../types";
 import { copyToClipboard, downloadQRCode, sanitizeFilename } from "../utils/export";
 
@@ -35,12 +35,12 @@ interface DownloadButtonsProps {
   onImportSettings: (settings: StoredSettings) => void;
 }
 
-const formats: { format: QRExportFormat; labelEn: string; labelDe: string; shortLabel: string; icon: typeof FileImage }[] = [
-  { format: "png", labelEn: "Download PNG", labelDe: "PNG herunterladen", shortLabel: "PNG", icon: ImageDown },
-  { format: "svg", labelEn: "Download SVG", labelDe: "SVG herunterladen", shortLabel: "SVG", icon: FileText },
-  { format: "jpeg", labelEn: "Download JPEG", labelDe: "JPEG herunterladen", shortLabel: "JPEG", icon: FileImage },
-  { format: "webp", labelEn: "Download WebP", labelDe: "WebP herunterladen", shortLabel: "WebP", icon: FileImage },
-  { format: "pdf", labelEn: "Download PDF", labelDe: "PDF herunterladen", shortLabel: "PDF", icon: FileArchive },
+const formats: { format: QRExportFormat; labelEn: string; labelDe: string; shortLabel: string; icon: IconType }[] = [
+  { format: "png", labelEn: "Download PNG", labelDe: "PNG herunterladen", shortLabel: "PNG", icon: HiOutlinePhoto },
+  { format: "svg", labelEn: "Download SVG", labelDe: "SVG herunterladen", shortLabel: "SVG", icon: HiOutlineDocumentText },
+  { format: "jpeg", labelEn: "Download JPEG", labelDe: "JPEG herunterladen", shortLabel: "JPEG", icon: HiOutlinePhoto },
+  { format: "webp", labelEn: "Download WebP", labelDe: "WebP herunterladen", shortLabel: "WebP", icon: HiOutlinePhoto },
+  { format: "pdf", labelEn: "Download PDF", labelDe: "PDF herunterladen", shortLabel: "PDF", icon: HiOutlineArchiveBox },
 ];
 
 const isStoredSettings = (value: unknown): value is StoredSettings => {
@@ -189,10 +189,10 @@ export function DownloadButtons({
         : "border-red-200 bg-red-50 text-red-900 dark:border-red-900/70 dark:bg-red-950/45 dark:text-red-100";
   const qualityShellTone =
     quality.level === "Excellent" || quality.level === "Good"
-      ? "border-emerald-200/90 bg-gradient-to-br from-emerald-50/95 via-white/90 to-blue-50/80 dark:border-emerald-900/60 dark:from-emerald-950/30 dark:via-slate-900/88 dark:to-blue-950/22"
+      ? "border-slate-200/90 bg-gradient-to-br from-slate-50/95 via-white/95 to-slate-100/85 dark:border-emerald-900/60 dark:from-emerald-950/30 dark:via-slate-900/88 dark:to-blue-950/22"
       : quality.level === "Risky"
-        ? "border-amber-200/90 bg-gradient-to-br from-amber-50/95 via-white/90 to-orange-50/80 dark:border-amber-900/60 dark:from-amber-950/30 dark:via-slate-900/88 dark:to-orange-950/22"
-        : "border-rose-200/90 bg-gradient-to-br from-rose-50/95 via-white/90 to-amber-50/80 dark:border-rose-900/60 dark:from-rose-950/30 dark:via-slate-900/88 dark:to-amber-950/22";
+        ? "border-slate-200/90 bg-gradient-to-br from-slate-50/95 via-white/95 to-slate-100/85 dark:border-amber-900/60 dark:from-amber-950/30 dark:via-slate-900/88 dark:to-orange-950/22"
+        : "border-slate-200/90 bg-gradient-to-br from-slate-50/95 via-white/95 to-slate-100/85 dark:border-rose-900/60 dark:from-rose-950/30 dark:via-slate-900/88 dark:to-amber-950/22";
 
   return (
     <section className="bottom-action-bar fixed inset-x-0 bottom-0 z-50 max-h-[62vh] overflow-y-auto overflow-x-visible border-t border-slate-200 px-3 py-2 dark:border-slate-800 sm:px-4">
@@ -201,7 +201,7 @@ export function DownloadButtons({
           <div className={`rounded-md border px-3 py-1.5 ${qualityTone}`}>
             <div className="flex min-h-7 items-center justify-between gap-2">
               <span className="flex min-w-0 items-center gap-2 text-[13px] font-semibold">
-                {quality.level === "Excellent" || quality.level === "Good" ? <Check aria-hidden="true" className="h-4 w-4" /> : <AlertTriangle aria-hidden="true" className="h-4 w-4" />}
+                {quality.level === "Excellent" || quality.level === "Good" ? <HiOutlineCheck aria-hidden="true" className="h-4 w-4" /> : <HiOutlineExclamationTriangle aria-hidden="true" className="h-4 w-4" />}
                 <span className="truncate">{isDe ? "Qualität" : "Quality"}: {qualityLabel}</span>
               </span>
               <span className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export function DownloadButtons({
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col justify-center rounded-lg border border-blue-200/90 bg-gradient-to-br from-blue-50/95 via-white/90 to-sky-50/90 p-2 shadow-panel dark:border-blue-900/60 dark:from-blue-950/32 dark:via-slate-900/88 dark:to-sky-950/28">
+        <div className="flex min-w-0 flex-1 flex-col justify-center rounded-lg border border-slate-200/90 bg-gradient-to-br from-slate-50/95 via-white/95 to-slate-100/85 p-2 shadow-panel dark:border-blue-900/60 dark:from-blue-950/32 dark:via-slate-900/88 dark:to-sky-950/28">
           <div className="grid gap-2 sm:grid-cols-[minmax(160px,240px)_minmax(0,1fr)] xl:grid-cols-[minmax(160px,240px)_minmax(0,1fr)_auto] xl:items-center">
             <label className="grid gap-1 xl:gap-0">
               <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{isDe ? "Dateiname" : "Filename"}</span>
@@ -257,7 +257,7 @@ export function DownloadButtons({
                 onClick={() => setShowAll((current) => !current)}
                 className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200 dark:hover:border-blue-800 dark:hover:bg-blue-950/30 xl:whitespace-nowrap"
               >
-                <Download aria-hidden="true" className="h-4 w-4" />
+                <HiOutlineArrowDownTray aria-hidden="true" className="h-4 w-4" />
                 {showAll ? (isDe ? "Weniger" : "Less") : isDe ? "Formate" : "Formats"}
               </button>
             </div>
@@ -271,14 +271,14 @@ export function DownloadButtons({
               }}
               className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200 dark:hover:border-blue-800 dark:hover:bg-blue-950/30 xl:whitespace-nowrap"
             >
-              {copied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Copy aria-hidden="true" className="h-4 w-4" />}
+              {copied ? <HiOutlineCheck aria-hidden="true" className="h-4 w-4" /> : <HiOutlineClipboardDocumentCheck aria-hidden="true" className="h-4 w-4" />}
               {isDe ? "Inhalt kopieren" : "Copy content"}
             </button>
           </div>
           {status ? <p className="mt-2 rounded-md border border-slate-100 bg-white/70 px-3 py-2 text-sm text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-950/45 dark:text-slate-300">{status}</p> : null}
         </div>
 
-        <div className="flex min-w-[260px] flex-col justify-center rounded-lg border border-indigo-200/90 bg-gradient-to-br from-indigo-50/90 via-white/90 to-amber-50/75 p-2 shadow-panel dark:border-indigo-900/60 dark:from-indigo-950/35 dark:via-slate-900/88 dark:to-amber-950/22 lg:w-[320px]">
+        <div className="flex min-w-[260px] flex-col justify-center rounded-lg border border-slate-200/90 bg-gradient-to-br from-slate-50/95 via-white/95 to-slate-100/85 p-2 shadow-panel dark:border-indigo-900/60 dark:from-indigo-950/35 dark:via-slate-900/88 dark:to-amber-950/22 lg:w-[320px]">
           <div className="mb-1.5 flex items-center justify-between gap-3">
             <p className="text-[11px] font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300 lg:hidden">{isDe ? "Verlauf & Einstellungen" : "History & Settings"}</p>
             {history.length ? (
@@ -288,7 +288,7 @@ export function DownloadButtons({
                 title={isDe ? "Verlauf leeren" : "Clear history"}
                 className="premium-button inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white/88 text-slate-600 hover:border-red-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-300 lg:hidden"
               >
-                <Trash2 aria-hidden="true" className="h-4 w-4" />
+                <HiOutlineTrash aria-hidden="true" className="h-4 w-4" />
               </button>
             ) : null}
           </div>
@@ -303,7 +303,7 @@ export function DownloadButtons({
                     className="premium-button rounded-md border border-slate-100 bg-white/72 px-2.5 py-2 text-left text-sm shadow-sm hover:border-blue-200 hover:bg-blue-50/60 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-950/45"
                   >
                     <span className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-100">
-                      <Clock3 aria-hidden="true" className="h-3.5 w-3.5 text-slate-500" />
+                      <HiOutlineClock aria-hidden="true" className="h-3.5 w-3.5 text-slate-500" />
                       {item.title}
                     </span>
                   </button>
@@ -321,7 +321,7 @@ export function DownloadButtons({
               onClick={exportJson}
               className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-2.5 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200"
             >
-              <Download aria-hidden="true" className="h-4 w-4" />
+              <HiOutlineArrowDownTray aria-hidden="true" className="h-4 w-4" />
               JSON
             </button>
             <input
@@ -339,7 +339,7 @@ export function DownloadButtons({
               onClick={() => importInputRef.current?.click()}
               className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-2.5 text-[13px] font-medium text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/70 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200"
             >
-              <Upload aria-hidden="true" className="h-4 w-4" />
+              <HiOutlineArrowUpTray aria-hidden="true" className="h-4 w-4" />
               Import
             </button>
             <button
@@ -353,7 +353,7 @@ export function DownloadButtons({
               }}
               className="premium-button inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-slate-200 bg-white/88 px-2.5 text-[13px] font-medium text-slate-700 shadow-sm hover:border-indigo-200 hover:bg-indigo-50/70 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-200"
             >
-              {settingsCopied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Clipboard aria-hidden="true" className="h-4 w-4" />}
+              {settingsCopied ? <HiOutlineCheck aria-hidden="true" className="h-4 w-4" /> : <HiOutlineClipboardDocument aria-hidden="true" className="h-4 w-4" />}
               {isDe ? "Kopieren" : "Copy"}
             </button>
           </div>
