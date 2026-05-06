@@ -37,6 +37,44 @@ The app runs entirely in the browser without a backend.
 npm run build
 ```
 
+## Desktop App With Tauri
+
+The project can also run as a native desktop app with Tauri v2 on Windows, macOS, and Linux.
+
+### Prerequisites
+
+- Node.js and npm
+- Rust toolchain (`rustup`, `cargo`)
+- Tauri system dependencies for your OS: https://v2.tauri.app/start/prerequisites/
+
+On Ubuntu, you will typically also need:
+
+```bash
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libdbus-1-dev pkg-config
+```
+
+### Desktop Development
+
+```bash
+npm install
+npm run desktop:dev
+```
+
+### Desktop Build
+
+```bash
+npm install
+npm run desktop:build
+```
+
+### Optional App Icons
+
+A vector source icon is included at `src-tauri/icons/icon.svg`. To generate platform icons later, you can run:
+
+```bash
+npm run tauri -- icon src-tauri/icons/icon.svg
+```
+
 ## Libraries Used
 
 - `react`
