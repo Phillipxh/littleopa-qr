@@ -47,6 +47,12 @@ The project can also run as a native desktop app with Tauri v2 on Windows, macOS
 - Rust toolchain (`rustup`, `cargo`)
 - Tauri system dependencies for your OS: https://v2.tauri.app/start/prerequisites/
 
+On Ubuntu, you will typically also need:
+
+```bash
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libdbus-1-dev pkg-config
+```
+
 ### Desktop Development
 
 ```bash
