@@ -39,13 +39,13 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
   }, [options, qrCodeRef]);
 
   return (
-    <section className="premium-card sticky top-4 p-4">
-      <div className="mb-4 flex items-start justify-between gap-3">
+    <section className="premium-card p-4 sm:p-5 lg:sticky lg:top-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{isDe ? "Live-Vorschau" : "Live Preview"}</p>
           <h2 className="mt-1 text-lg font-semibold tracking-normal text-slate-950 dark:text-white">{isDe ? "Finaler QR-Code" : "Final QR Code"}</h2>
         </div>
-        <label className="premium-button flex items-center gap-2 rounded-md border border-slate-200 bg-white/70 px-2.5 py-2 text-sm font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-950/45 dark:text-slate-300">
+        <label className="premium-button flex w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white/70 px-2.5 py-2 text-sm font-semibold text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-950/45 dark:text-slate-300 sm:w-auto sm:justify-start">
           <input
             type="checkbox"
             checked={liveUpdate}
@@ -56,7 +56,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
         </label>
       </div>
       <div
-        className={`preview-frame mx-auto flex aspect-square w-full max-w-[420px] items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white p-4 transition dark:border-slate-800 ${
+        className={`preview-frame mx-auto flex aspect-square w-full max-w-[420px] items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white p-3 transition dark:border-slate-800 sm:p-4 ${
           design.transparentBackground ? "checkerboard" : ""
         }`}
         style={{ backgroundColor: design.transparentBackground ? undefined : design.backgroundColor }}
@@ -79,7 +79,7 @@ export function QRPreview({ language, value, design, logo, liveUpdate, onLiveUpd
             {isDe ? "Vorschau aktualisieren" : "Refresh Preview"}
           </button>
         ) : null}
-        <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="grid gap-2 text-sm sm:grid-cols-2">
           <p className="rounded-md border border-slate-100 bg-white/72 px-3 py-2 text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-950/55 dark:text-slate-300">
             {isDe ? "Exportgröße" : "Export Size"} <strong className="block text-slate-950 dark:text-white">{design.size} x {design.size} px</strong>
           </p>
