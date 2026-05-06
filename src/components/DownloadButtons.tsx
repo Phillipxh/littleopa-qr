@@ -1,4 +1,4 @@
-import QRCodeStyling from "qr-code-styling";
+import type QRCodeStyling from "qr-code-styling";
 import {
   HiOutlineArchiveBox,
   HiOutlineArrowDownTray,

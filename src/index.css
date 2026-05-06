@@ -147,6 +147,12 @@ select {
     animation: panel-in 360ms ease both;
   }
 
+  .content-section {
+    content-visibility: auto;
+    contain: layout style paint;
+    contain-intrinsic-size: 720px;
+  }
+
   .premium-card::before {
     content: "";
     position: absolute;
@@ -278,5 +284,46 @@ select {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .app-shell::before {
+    display: none;
+  }
+
+  .premium-card,
+  .bottom-action-bar {
+    backdrop-filter: none;
+  }
+
+  .premium-card,
+  .premium-button,
+  .type-card {
+    transition: none;
+  }
+
+  .premium-card {
+    animation: none;
+  }
+
+  .premium-card:hover,
+  .premium-button:hover,
+  .type-card:hover {
+    transform: none;
+    filter: none;
+  }
+
+  .bottom-action-bar {
+    box-shadow: 0 -12px 28px -24px rgba(15, 23, 42, 0.28);
+  }
+
+  .preview-frame {
+    box-shadow: 0 12px 28px -24px rgba(15, 23, 42, 0.42);
+  }
+
+  .animated-progress,
+  .floating-icon {
+    animation: none;
   }
 }

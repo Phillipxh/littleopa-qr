@@ -1,5 +1,4 @@
-import QRCodeStyling from "qr-code-styling";
-import { jsPDF } from "jspdf";
+import type QRCodeStyling from "qr-code-styling";
 import type { QRDesignOptions, QRExportFormat } from "../types";
 import { toFileExtension } from "./qrOptions";
 
@@ -28,6 +27,7 @@ export const downloadQRCode = async (
   const name = sanitizeFilename(fileName);
 
   if (format === "pdf") {
+    const { jsPDF } = await import("jspdf");
     const raw = await qrCode.getRawData("png");
     if (!(raw instanceof Blob)) throw new Error("PDF-Export konnte kein PNG erzeugen.");
     const dataUrl = await blobToDataUrl(raw);

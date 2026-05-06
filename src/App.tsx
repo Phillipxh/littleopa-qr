@@ -1,4 +1,4 @@
-import QRCodeStyling from "qr-code-styling";
+import type QRCodeStyling from "qr-code-styling";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ContentTypeSelector } from "./components/ContentTypeSelector";
 import { DesignPanel } from "./components/DesignPanel";

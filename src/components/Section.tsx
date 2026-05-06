@@ -10,7 +10,7 @@ interface SectionProps {
 
 export function Section({ eyebrow, title, description, children, action }: SectionProps) {
   return (
-    <section className="premium-card p-4 sm:p-6">
+    <section className="premium-card content-section p-4 sm:p-6">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-blue-300">{eyebrow}</p>
